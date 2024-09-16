@@ -6,11 +6,7 @@ import PackageDescription
 let package = Package(
   name: "swift-spyable",
   platforms: [
-    .macOS(.v10_15),
-    .iOS(.v13),
-    .tvOS(.v13),
-    .watchOS(.v6),
-    .macCatalyst(.v13),
+    .iOS(.v13)
   ],
   products: [
     .library(
