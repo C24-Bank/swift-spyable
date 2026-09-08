@@ -556,6 +556,336 @@ final class UT_SpyableMacro: XCTestCase {
     )
   }
 
+  // MARK: - `threadSafe` argument
+
+  func testMacroWithThreadSafeArgument() {
+    let protocolDeclaration = """
+      protocol ServiceProtocol {
+          var data: Data { get }
+          func fetch(text: String) async -> Decimal
+          func isReady() -> Bool
+          func load() async throws
+      }
+      """
+
+    assertMacroExpansion(
+      """
+      @Spyable(threadSafe: true)
+      \(protocolDeclaration)
+      """,
+      expandedSource: """
+
+        protocol ServiceProtocol {
+            var data: Data { get }
+            func fetch(text: String) async -> Decimal
+            func isReady() -> Bool
+            func load() async throws
+        }
+
+        import Foundation
+
+        #if DEBUG
+        class ServiceProtocolSpy: ServiceProtocol, @unchecked Sendable {
+            init() {
+            }
+            private let lock = NSLock()
+            var data: Data {
+                get {
+                    underlyingData
+                }
+                set {
+                    underlyingData = newValue
+                }
+            }
+            private var _underlyingData: (Data)!
+            var underlyingData: (Data)! {
+                get {
+                    lock.lock();
+                    defer {
+                        lock.unlock()
+                    };
+                    return _underlyingData
+                }
+                set {
+                    lock.lock();
+                    defer {
+                        lock.unlock()
+                    };
+                    _underlyingData = newValue
+                }
+            }
+            private var _fetchTextCallsCount: Int = 0
+            var fetchTextCallsCount: Int {
+                get {
+                    lock.lock();
+                    defer {
+                        lock.unlock()
+                    };
+                    return _fetchTextCallsCount
+                }
+                set {
+                    lock.lock();
+                    defer {
+                        lock.unlock()
+                    };
+                    _fetchTextCallsCount = newValue
+                }
+            }
+            var fetchTextCalled: Bool {
+                return fetchTextCallsCount > 0
+            }
+            private var _fetchTextReceivedText: String?
+            var fetchTextReceivedText: String? {
+                get {
+                    lock.lock();
+                    defer {
+                        lock.unlock()
+                    };
+                    return _fetchTextReceivedText
+                }
+                set {
+                    lock.lock();
+                    defer {
+                        lock.unlock()
+                    };
+                    _fetchTextReceivedText = newValue
+                }
+            }
+            private var _fetchTextReceivedInvocations: [String] = []
+            var fetchTextReceivedInvocations: [String] {
+                get {
+                    lock.lock();
+                    defer {
+                        lock.unlock()
+                    };
+                    return _fetchTextReceivedInvocations
+                }
+                set {
+                    lock.lock();
+                    defer {
+                        lock.unlock()
+                    };
+                    _fetchTextReceivedInvocations = newValue
+                }
+            }
+            private var _fetchTextReturnValue: Decimal!
+            var fetchTextReturnValue: Decimal! {
+                get {
+                    lock.lock();
+                    defer {
+                        lock.unlock()
+                    };
+                    return _fetchTextReturnValue
+                }
+                set {
+                    lock.lock();
+                    defer {
+                        lock.unlock()
+                    };
+                    _fetchTextReturnValue = newValue
+                }
+            }
+            private var _fetchTextClosure: ((String) async -> Decimal)?
+            var fetchTextClosure: ((String) async -> Decimal)? {
+                get {
+                    lock.lock();
+                    defer {
+                        lock.unlock()
+                    };
+                    return _fetchTextClosure
+                }
+                set {
+                    lock.lock();
+                    defer {
+                        lock.unlock()
+                    };
+                    _fetchTextClosure = newValue
+                }
+            }
+            func fetch(text: String) async -> Decimal {
+                lock.lock()
+                _fetchTextCallsCount += 1
+                _fetchTextReceivedText = (text)
+                _fetchTextReceivedInvocations.append((text))
+                let fetchTextClosure = _fetchTextClosure
+                let fetchTextReturnValue = _fetchTextReturnValue
+                lock.unlock()
+                if fetchTextClosure != nil {
+                    return await fetchTextClosure!(text)
+                } else {
+                    return fetchTextReturnValue
+                }
+            }
+            private var _isReadyCallsCount: Int = 0
+            var isReadyCallsCount: Int {
+                get {
+                    lock.lock();
+                    defer {
+                        lock.unlock()
+                    };
+                    return _isReadyCallsCount
+                }
+                set {
+                    lock.lock();
+                    defer {
+                        lock.unlock()
+                    };
+                    _isReadyCallsCount = newValue
+                }
+            }
+            var isReadyCalled: Bool {
+                return isReadyCallsCount > 0
+            }
+            private var _isReadyReturnValue: Bool!
+            var isReadyReturnValue: Bool! {
+                get {
+                    lock.lock();
+                    defer {
+                        lock.unlock()
+                    };
+                    return _isReadyReturnValue
+                }
+                set {
+                    lock.lock();
+                    defer {
+                        lock.unlock()
+                    };
+                    _isReadyReturnValue = newValue
+                }
+            }
+            private var _isReadyClosure: (() -> Bool)?
+            var isReadyClosure: (() -> Bool)? {
+                get {
+                    lock.lock();
+                    defer {
+                        lock.unlock()
+                    };
+                    return _isReadyClosure
+                }
+                set {
+                    lock.lock();
+                    defer {
+                        lock.unlock()
+                    };
+                    _isReadyClosure = newValue
+                }
+            }
+            func isReady() -> Bool {
+                lock.lock()
+                _isReadyCallsCount += 1
+                let isReadyClosure = _isReadyClosure
+                let isReadyReturnValue = _isReadyReturnValue
+                lock.unlock()
+                if isReadyClosure != nil {
+                    return isReadyClosure!()
+                } else {
+                    return isReadyReturnValue
+                }
+            }
+            private var _loadCallsCount: Int = 0
+            var loadCallsCount: Int {
+                get {
+                    lock.lock();
+                    defer {
+                        lock.unlock()
+                    };
+                    return _loadCallsCount
+                }
+                set {
+                    lock.lock();
+                    defer {
+                        lock.unlock()
+                    };
+                    _loadCallsCount = newValue
+                }
+            }
+            var loadCalled: Bool {
+                return loadCallsCount > 0
+            }
+            private var _loadThrowableError: (any Error)?
+            var loadThrowableError: (any Error)? {
+                get {
+                    lock.lock();
+                    defer {
+                        lock.unlock()
+                    };
+                    return _loadThrowableError
+                }
+                set {
+                    lock.lock();
+                    defer {
+                        lock.unlock()
+                    };
+                    _loadThrowableError = newValue
+                }
+            }
+            private var _loadClosure: (() async throws -> Void)?
+            var loadClosure: (() async throws -> Void)? {
+                get {
+                    lock.lock();
+                    defer {
+                        lock.unlock()
+                    };
+                    return _loadClosure
+                }
+                set {
+                    lock.lock();
+                    defer {
+                        lock.unlock()
+                    };
+                    _loadClosure = newValue
+                }
+            }
+            func load() async throws {
+                lock.lock()
+                _loadCallsCount += 1
+                let loadThrowableError = _loadThrowableError
+                let loadClosure = _loadClosure
+                lock.unlock()
+                if let loadThrowableError {
+                    throw loadThrowableError
+                }
+                try await loadClosure?()
+            }
+        }
+        #endif
+        """,
+      macros: sut
+    )
+  }
+
+  func testMacroWithThreadSafeArgumentFromVariable() {
+    let protocolDeclaration = "protocol MyProtocol {}"
+
+    assertMacroExpansion(
+      """
+      let myCustomFlag = true
+
+      @Spyable(threadSafe: myCustomFlag)
+      \(protocolDeclaration)
+      """,
+      expandedSource: """
+        let myCustomFlag = true
+        \(protocolDeclaration)
+
+        #if DEBUG
+        class MyProtocolSpy: MyProtocol, @unchecked Sendable {
+            init() {
+            }
+        }
+        #endif
+        """,
+      diagnostics: [
+        DiagnosticSpec(
+          message: "The `threadSafe` argument requires a static boolean literal",
+          line: 3,
+          column: 1
+        )
+      ],
+      macros: sut
+    )
+  }
+
   func testPolymorphismOverloadedMethodsWithDifferentReturnTypesOnly() {
     let protocolDeclaration = """
       protocol OverloadedReturnTypesProtocol {
