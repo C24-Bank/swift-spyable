@@ -582,8 +582,6 @@ final class UT_SpyableMacro: XCTestCase {
             func load() async throws
         }
 
-        import Foundation
-
         #if DEBUG
         class ServiceProtocolSpy: ServiceProtocol, @unchecked Sendable {
             init() {

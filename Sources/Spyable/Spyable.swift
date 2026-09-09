@@ -135,6 +135,9 @@
 ///   so the generated spy is safe to observe from concurrent, unstructured `Task`s. Use this when
 ///   a spy may be called from more than one in-flight `Task` at once; the default (`false`)
 ///   matches the original, unsynchronized behavior.
+///
+///   The lock is `NSLock`, from `Foundation` — a macro expansion cannot add an `import` on its
+///   own, so the annotated protocol's file must already `import Foundation`.
 ///   Example:
 ///   ```swift
 ///   @Spyable(threadSafe: true)
