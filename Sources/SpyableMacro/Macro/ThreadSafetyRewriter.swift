@@ -38,18 +38,29 @@ struct ThreadSafetyRewriter {
       prefixFactory: VariablePrefixFactory()
     )
 
+    // Properties always precede the function(s) that reference them in generation order, so this
+    // fills in before it's needed: a snapshot `let` must be declared with its backing property's
+    // exact type (including `!`), since plain type inference on `let x = anIUOValue` silently
+    // drops the implicit-unwrap and produces an optional the untouched dispatch code below won't
+    // typecheck against.
+    var propertyTypes: [String: String] = [:]
+
     var newMembers: [MemberBlockItemSyntax] = []
     for member in classDeclaration.memberBlock.members {
       if let variableDeclaration = member.decl.as(VariableDeclSyntax.self),
         let locked = lockedDeclarations(for: variableDeclaration)
       {
+        propertyTypes[locked.name] = locked.type
         newMembers.append(MemberBlockItemSyntax(decl: DeclSyntax(locked.backing)))
         newMembers.append(MemberBlockItemSyntax(decl: DeclSyntax(locked.accessor)))
       } else if let functionDeclaration = member.decl.as(FunctionDeclSyntax.self) {
         let variablePrefix = polymorphismDetector.getVariablePrefix(for: functionDeclaration)
         newMembers.append(
           MemberBlockItemSyntax(
-            decl: DeclSyntax(rewriteFunction(functionDeclaration, variablePrefix: variablePrefix))
+            decl: DeclSyntax(
+              rewriteFunction(
+                functionDeclaration, variablePrefix: variablePrefix, propertyTypes: propertyTypes)
+            )
           )
         )
       } else {
@@ -84,7 +95,7 @@ struct ThreadSafetyRewriter {
   /// computed property) is left untouched — it already just reads another property by name.
   private func lockedDeclarations(
     for variableDeclaration: VariableDeclSyntax
-  ) -> (backing: VariableDeclSyntax, accessor: VariableDeclSyntax)? {
+  ) -> (name: String, type: String, backing: VariableDeclSyntax, accessor: VariableDeclSyntax)? {
     guard variableDeclaration.bindings.count == 1,
       let binding = variableDeclaration.bindings.first,
       binding.accessorBlock == nil,
@@ -123,14 +134,15 @@ struct ThreadSafetyRewriter {
       """
     )
 
-    return (backing, accessor)
+    return (name, type, backing, accessor)
   }
 
   // MARK: - Functions
 
   private func rewriteFunction(
     _ functionDeclaration: FunctionDeclSyntax,
-    variablePrefix: String
+    variablePrefix: String,
+    propertyTypes: [String: String]
   ) -> FunctionDeclSyntax {
     guard let body = functionDeclaration.body else { return functionDeclaration }
 
@@ -173,15 +185,24 @@ struct ThreadSafetyRewriter {
     var snapshotStatements: [CodeBlockItemSyntax] = []
     if functionThrows {
       snapshotStatements.append(
-        snapshotStatement(for: throwableErrorFactory.variableIdentifier(variablePrefix: variablePrefix))
+        snapshotStatement(
+          for: throwableErrorFactory.variableIdentifier(variablePrefix: variablePrefix),
+          propertyTypes: propertyTypes
+        )
       )
     }
     snapshotStatements.append(
-      snapshotStatement(for: closureFactory.variableIdentifier(variablePrefix: variablePrefix))
+      snapshotStatement(
+        for: closureFactory.variableIdentifier(variablePrefix: variablePrefix),
+        propertyTypes: propertyTypes
+      )
     )
     if functionReturns {
       snapshotStatements.append(
-        snapshotStatement(for: returnValueFactory.variableIdentifier(variablePrefix: variablePrefix))
+        snapshotStatement(
+          for: returnValueFactory.variableIdentifier(variablePrefix: variablePrefix),
+          propertyTypes: propertyTypes
+        )
       )
     }
 
@@ -201,13 +222,30 @@ struct ThreadSafetyRewriter {
     return newFunction
   }
 
-  private func snapshotStatement(for name: TokenSyntax) -> CodeBlockItemSyntax {
+  /// Explicitly typing the snapshot with the backing property's own declared type matters for
+  /// `ReturnValue`, which is an implicitly-unwrapped optional (`Decimal!`, say): a bare
+  /// `let x = _x` would infer `x` as the *plain* optional (`Decimal?`), silently dropping the
+  /// implicit unwrap — and the untouched dispatch code below (`return returnValue`) expects the
+  /// non-optional type the function actually returns, not `Decimal?`.
+  private func snapshotStatement(
+    for name: TokenSyntax,
+    propertyTypes: [String: String]
+  ) -> CodeBlockItemSyntax {
     let backingName = TokenSyntax.identifier("_" + name.text)
-    let declaration = try! VariableDeclSyntax(
-      """
-      let \(name) = \(backingName)
-      """
-    )
+    let declaration: VariableDeclSyntax
+    if let type = propertyTypes[name.text] {
+      declaration = try! VariableDeclSyntax(
+        """
+        let \(name): \(raw: type) = \(backingName)
+        """
+      )
+    } else {
+      declaration = try! VariableDeclSyntax(
+        """
+        let \(name) = \(backingName)
+        """
+      )
+    }
     return codeBlockItem(declaration)
   }
 

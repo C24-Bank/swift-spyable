@@ -705,8 +705,8 @@ final class UT_SpyableMacro: XCTestCase {
                 _fetchTextCallsCount += 1
                 _fetchTextReceivedText = (text)
                 _fetchTextReceivedInvocations.append((text))
-                let fetchTextClosure = _fetchTextClosure
-                let fetchTextReturnValue = _fetchTextReturnValue
+                let fetchTextClosure: ((String) async -> Decimal)? = _fetchTextClosure
+                let fetchTextReturnValue: Decimal! = _fetchTextReturnValue
                 lock.unlock()
                 if fetchTextClosure != nil {
                     return await fetchTextClosure!(text)
@@ -771,8 +771,8 @@ final class UT_SpyableMacro: XCTestCase {
             func isReady() -> Bool {
                 lock.lock()
                 _isReadyCallsCount += 1
-                let isReadyClosure = _isReadyClosure
-                let isReadyReturnValue = _isReadyReturnValue
+                let isReadyClosure: (() -> Bool)? = _isReadyClosure
+                let isReadyReturnValue: Bool! = _isReadyReturnValue
                 lock.unlock()
                 if isReadyClosure != nil {
                     return isReadyClosure!()
@@ -837,8 +837,8 @@ final class UT_SpyableMacro: XCTestCase {
             func load() async throws {
                 lock.lock()
                 _loadCallsCount += 1
-                let loadThrowableError = _loadThrowableError
-                let loadClosure = _loadClosure
+                let loadThrowableError: (any Error)? = _loadThrowableError
+                let loadClosure: (() async throws -> Void)? = _loadClosure
                 lock.unlock()
                 if let loadThrowableError {
                     throw loadThrowableError
