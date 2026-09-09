@@ -586,7 +586,7 @@ final class UT_SpyableMacro: XCTestCase {
         class ServiceProtocolSpy: ServiceProtocol, @unchecked Sendable {
             init() {
             }
-            private let lock = NSLock()
+            private let __spyableLock = NSLock()
             var data: Data {
                 get {
                     underlyingData
@@ -595,255 +595,388 @@ final class UT_SpyableMacro: XCTestCase {
                     underlyingData = newValue
                 }
             }
-            private var _underlyingData: (Data)!
+            private var __spyable_underlyingData: (Data)!
             var underlyingData: (Data)! {
                 get {
-                    lock.lock();
+                    __spyableLock.lock();
                     defer {
-                        lock.unlock()
+                        __spyableLock.unlock()
                     };
-                    return _underlyingData
+                    return __spyable_underlyingData
                 }
                 set {
-                    lock.lock();
+                    __spyableLock.lock();
                     defer {
-                        lock.unlock()
+                        __spyableLock.unlock()
                     };
-                    _underlyingData = newValue
+                    __spyable_underlyingData = newValue
                 }
             }
-            private var _fetchTextCallsCount: Int = 0
+            private var __spyable_fetchTextCallsCount: Int = 0
             var fetchTextCallsCount: Int {
                 get {
-                    lock.lock();
+                    __spyableLock.lock();
                     defer {
-                        lock.unlock()
+                        __spyableLock.unlock()
                     };
-                    return _fetchTextCallsCount
+                    return __spyable_fetchTextCallsCount
                 }
                 set {
-                    lock.lock();
+                    __spyableLock.lock();
                     defer {
-                        lock.unlock()
+                        __spyableLock.unlock()
                     };
-                    _fetchTextCallsCount = newValue
+                    __spyable_fetchTextCallsCount = newValue
                 }
             }
             var fetchTextCalled: Bool {
                 return fetchTextCallsCount > 0
             }
-            private var _fetchTextReceivedText: String?
+            private var __spyable_fetchTextReceivedText: String?
             var fetchTextReceivedText: String? {
                 get {
-                    lock.lock();
+                    __spyableLock.lock();
                     defer {
-                        lock.unlock()
+                        __spyableLock.unlock()
                     };
-                    return _fetchTextReceivedText
+                    return __spyable_fetchTextReceivedText
                 }
                 set {
-                    lock.lock();
+                    __spyableLock.lock();
                     defer {
-                        lock.unlock()
+                        __spyableLock.unlock()
                     };
-                    _fetchTextReceivedText = newValue
+                    __spyable_fetchTextReceivedText = newValue
                 }
             }
-            private var _fetchTextReceivedInvocations: [String] = []
+            private var __spyable_fetchTextReceivedInvocations: [String] = []
             var fetchTextReceivedInvocations: [String] {
                 get {
-                    lock.lock();
+                    __spyableLock.lock();
                     defer {
-                        lock.unlock()
+                        __spyableLock.unlock()
                     };
-                    return _fetchTextReceivedInvocations
+                    return __spyable_fetchTextReceivedInvocations
                 }
                 set {
-                    lock.lock();
+                    __spyableLock.lock();
                     defer {
-                        lock.unlock()
+                        __spyableLock.unlock()
                     };
-                    _fetchTextReceivedInvocations = newValue
+                    __spyable_fetchTextReceivedInvocations = newValue
                 }
             }
-            private var _fetchTextReturnValue: Decimal!
+            private var __spyable_fetchTextReturnValue: Decimal!
             var fetchTextReturnValue: Decimal! {
                 get {
-                    lock.lock();
+                    __spyableLock.lock();
                     defer {
-                        lock.unlock()
+                        __spyableLock.unlock()
                     };
-                    return _fetchTextReturnValue
+                    return __spyable_fetchTextReturnValue
                 }
                 set {
-                    lock.lock();
+                    __spyableLock.lock();
                     defer {
-                        lock.unlock()
+                        __spyableLock.unlock()
                     };
-                    _fetchTextReturnValue = newValue
+                    __spyable_fetchTextReturnValue = newValue
                 }
             }
-            private var _fetchTextClosure: ((String) async -> Decimal)?
+            private var __spyable_fetchTextClosure: ((String) async -> Decimal)?
             var fetchTextClosure: ((String) async -> Decimal)? {
                 get {
-                    lock.lock();
+                    __spyableLock.lock();
                     defer {
-                        lock.unlock()
+                        __spyableLock.unlock()
                     };
-                    return _fetchTextClosure
+                    return __spyable_fetchTextClosure
                 }
                 set {
-                    lock.lock();
+                    __spyableLock.lock();
                     defer {
-                        lock.unlock()
+                        __spyableLock.unlock()
                     };
-                    _fetchTextClosure = newValue
+                    __spyable_fetchTextClosure = newValue
                 }
             }
             func fetch(text: String) async -> Decimal {
-                lock.lock()
-                _fetchTextCallsCount += 1
-                _fetchTextReceivedText = (text)
-                _fetchTextReceivedInvocations.append((text))
-                let fetchTextClosure: ((String) async -> Decimal)? = _fetchTextClosure
-                let fetchTextReturnValue: Decimal! = _fetchTextReturnValue
-                lock.unlock()
+                __spyableLock.lock()
+                __spyable_fetchTextCallsCount += 1
+                __spyable_fetchTextReceivedText = (text)
+                __spyable_fetchTextReceivedInvocations.append((text))
+                let fetchTextClosure: ((String) async -> Decimal)? = __spyable_fetchTextClosure
+                let fetchTextReturnValue: Decimal! = __spyable_fetchTextReturnValue
+                __spyableLock.unlock()
                 if fetchTextClosure != nil {
                     return await fetchTextClosure!(text)
                 } else {
                     return fetchTextReturnValue
                 }
             }
-            private var _isReadyCallsCount: Int = 0
+            private var __spyable_isReadyCallsCount: Int = 0
             var isReadyCallsCount: Int {
                 get {
-                    lock.lock();
+                    __spyableLock.lock();
                     defer {
-                        lock.unlock()
+                        __spyableLock.unlock()
                     };
-                    return _isReadyCallsCount
+                    return __spyable_isReadyCallsCount
                 }
                 set {
-                    lock.lock();
+                    __spyableLock.lock();
                     defer {
-                        lock.unlock()
+                        __spyableLock.unlock()
                     };
-                    _isReadyCallsCount = newValue
+                    __spyable_isReadyCallsCount = newValue
                 }
             }
             var isReadyCalled: Bool {
                 return isReadyCallsCount > 0
             }
-            private var _isReadyReturnValue: Bool!
+            private var __spyable_isReadyReturnValue: Bool!
             var isReadyReturnValue: Bool! {
                 get {
-                    lock.lock();
+                    __spyableLock.lock();
                     defer {
-                        lock.unlock()
+                        __spyableLock.unlock()
                     };
-                    return _isReadyReturnValue
+                    return __spyable_isReadyReturnValue
                 }
                 set {
-                    lock.lock();
+                    __spyableLock.lock();
                     defer {
-                        lock.unlock()
+                        __spyableLock.unlock()
                     };
-                    _isReadyReturnValue = newValue
+                    __spyable_isReadyReturnValue = newValue
                 }
             }
-            private var _isReadyClosure: (() -> Bool)?
+            private var __spyable_isReadyClosure: (() -> Bool)?
             var isReadyClosure: (() -> Bool)? {
                 get {
-                    lock.lock();
+                    __spyableLock.lock();
                     defer {
-                        lock.unlock()
+                        __spyableLock.unlock()
                     };
-                    return _isReadyClosure
+                    return __spyable_isReadyClosure
                 }
                 set {
-                    lock.lock();
+                    __spyableLock.lock();
                     defer {
-                        lock.unlock()
+                        __spyableLock.unlock()
                     };
-                    _isReadyClosure = newValue
+                    __spyable_isReadyClosure = newValue
                 }
             }
             func isReady() -> Bool {
-                lock.lock()
-                _isReadyCallsCount += 1
-                let isReadyClosure: (() -> Bool)? = _isReadyClosure
-                let isReadyReturnValue: Bool! = _isReadyReturnValue
-                lock.unlock()
+                __spyableLock.lock()
+                __spyable_isReadyCallsCount += 1
+                let isReadyClosure: (() -> Bool)? = __spyable_isReadyClosure
+                let isReadyReturnValue: Bool! = __spyable_isReadyReturnValue
+                __spyableLock.unlock()
                 if isReadyClosure != nil {
                     return isReadyClosure!()
                 } else {
                     return isReadyReturnValue
                 }
             }
-            private var _loadCallsCount: Int = 0
+            private var __spyable_loadCallsCount: Int = 0
             var loadCallsCount: Int {
                 get {
-                    lock.lock();
+                    __spyableLock.lock();
                     defer {
-                        lock.unlock()
+                        __spyableLock.unlock()
                     };
-                    return _loadCallsCount
+                    return __spyable_loadCallsCount
                 }
                 set {
-                    lock.lock();
+                    __spyableLock.lock();
                     defer {
-                        lock.unlock()
+                        __spyableLock.unlock()
                     };
-                    _loadCallsCount = newValue
+                    __spyable_loadCallsCount = newValue
                 }
             }
             var loadCalled: Bool {
                 return loadCallsCount > 0
             }
-            private var _loadThrowableError: (any Error)?
+            private var __spyable_loadThrowableError: (any Error)?
             var loadThrowableError: (any Error)? {
                 get {
-                    lock.lock();
+                    __spyableLock.lock();
                     defer {
-                        lock.unlock()
+                        __spyableLock.unlock()
                     };
-                    return _loadThrowableError
+                    return __spyable_loadThrowableError
                 }
                 set {
-                    lock.lock();
+                    __spyableLock.lock();
                     defer {
-                        lock.unlock()
+                        __spyableLock.unlock()
                     };
-                    _loadThrowableError = newValue
+                    __spyable_loadThrowableError = newValue
                 }
             }
-            private var _loadClosure: (() async throws -> Void)?
+            private var __spyable_loadClosure: (() async throws -> Void)?
             var loadClosure: (() async throws -> Void)? {
                 get {
-                    lock.lock();
+                    __spyableLock.lock();
                     defer {
-                        lock.unlock()
+                        __spyableLock.unlock()
                     };
-                    return _loadClosure
+                    return __spyable_loadClosure
                 }
                 set {
-                    lock.lock();
+                    __spyableLock.lock();
                     defer {
-                        lock.unlock()
+                        __spyableLock.unlock()
                     };
-                    _loadClosure = newValue
+                    __spyable_loadClosure = newValue
                 }
             }
             func load() async throws {
-                lock.lock()
-                _loadCallsCount += 1
-                let loadThrowableError: (any Error)? = _loadThrowableError
-                let loadClosure: (() async throws -> Void)? = _loadClosure
-                lock.unlock()
+                __spyableLock.lock()
+                __spyable_loadCallsCount += 1
+                let loadThrowableError: (any Error)? = __spyable_loadThrowableError
+                let loadClosure: (() async throws -> Void)? = __spyable_loadClosure
+                __spyableLock.unlock()
                 if let loadThrowableError {
                     throw loadThrowableError
                 }
                 try await loadClosure?()
+            }
+        }
+        #endif
+        """,
+      macros: sut
+    )
+  }
+
+  func testMacroWithThreadSafeArgumentAndPublicAccessLevel() {
+    let protocolDeclaration = """
+      protocol ServiceProtocol {
+          func fetch(text: String) -> Int
+      }
+      """
+
+    assertMacroExpansion(
+      """
+      @Spyable(accessLevel: .public, threadSafe: true)
+      \(protocolDeclaration)
+      """,
+      expandedSource: """
+
+        protocol ServiceProtocol {
+            func fetch(text: String) -> Int
+        }
+
+        #if DEBUG
+        public class ServiceProtocolSpy: ServiceProtocol, @unchecked Sendable {
+            public init() {
+            }
+            private let __spyableLock = NSLock()
+            private var __spyable_fetchTextCallsCount: Int = 0
+            public var fetchTextCallsCount: Int {
+                get {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    return __spyable_fetchTextCallsCount
+                }
+                set {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    __spyable_fetchTextCallsCount = newValue
+                }
+            }
+            public var fetchTextCalled: Bool {
+                return fetchTextCallsCount > 0
+            }
+            private var __spyable_fetchTextReceivedText: String?
+            public var fetchTextReceivedText: String? {
+                get {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    return __spyable_fetchTextReceivedText
+                }
+                set {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    __spyable_fetchTextReceivedText = newValue
+                }
+            }
+            private var __spyable_fetchTextReceivedInvocations: [String] = []
+            public var fetchTextReceivedInvocations: [String] {
+                get {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    return __spyable_fetchTextReceivedInvocations
+                }
+                set {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    __spyable_fetchTextReceivedInvocations = newValue
+                }
+            }
+            private var __spyable_fetchTextReturnValue: Int!
+            public var fetchTextReturnValue: Int! {
+                get {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    return __spyable_fetchTextReturnValue
+                }
+                set {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    __spyable_fetchTextReturnValue = newValue
+                }
+            }
+            private var __spyable_fetchTextClosure: ((String) -> Int)?
+            public var fetchTextClosure: ((String) -> Int)? {
+                get {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    return __spyable_fetchTextClosure
+                }
+                set {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    __spyable_fetchTextClosure = newValue
+                }
+            }
+            public
+            func fetch(text: String) -> Int {
+                __spyableLock.lock()
+                __spyable_fetchTextCallsCount += 1
+                __spyable_fetchTextReceivedText = (text)
+                __spyable_fetchTextReceivedInvocations.append((text))
+                let fetchTextClosure: ((String) -> Int)? = __spyable_fetchTextClosure
+                let fetchTextReturnValue: Int! = __spyable_fetchTextReturnValue
+                __spyableLock.unlock()
+                if fetchTextClosure != nil {
+                    return fetchTextClosure!(text)
+                } else {
+                    return fetchTextReturnValue
+                }
             }
         }
         #endif

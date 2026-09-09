@@ -12,8 +12,8 @@ import SwiftSyntaxBuilder
 /// It does two things:
 /// 1. Every plain stored property (`CallsCount`, `ReceivedArguments`, `ReceivedInvocations`,
 ///    `ThrowableError`, `ReturnValue`, `Closure`, and the `underlying` backing of a `{ get set }`
-///    protocol property) is rewritten into a private backing field plus a public computed
-///    accessor guarded by one shared `NSLock`.
+///    protocol property) is rewritten into a private backing field plus a computed accessor of
+///    the property's own original access level, guarded by one shared `NSLock`.
 /// 2. Each function's own bookkeeping (the call-count increment and, when present, the received
 ///    arguments/invocations recording) is wrapped in a single `lock()`/`unlock()` pair, so one
 ///    call's bookkeeping can never interleave with another's. Snapshots of whichever of
@@ -21,6 +21,10 @@ import SwiftSyntaxBuilder
 ///    and bound to local `let`s of the same name — the existing throw-check and dispatch code
 ///    that follows is left completely untouched, since it already reads those exact names, which
 ///    now resolve to the point-in-time snapshots instead of the (locked) properties.
+///
+/// The lock and every backing field are named with a `__spyable`-mangled prefix rather than a
+/// plain `lock`/`_name`, so they can never collide with a protocol member that happens to share
+/// that name.
 struct ThreadSafetyRewriter {
   private let receivedArgumentsFactory = ReceivedArgumentsFactory()
   private let receivedInvocationsFactory = ReceivedInvocationsFactory()
@@ -28,6 +32,12 @@ struct ThreadSafetyRewriter {
   private let throwableErrorFactory = ThrowableErrorFactory()
   private let returnValueFactory = ReturnValueFactory()
   private let closureFactory = ClosureFactory()
+
+  private let lockName = "__spyableLock"
+
+  private func backingName(for name: String) -> String {
+    "__spyable_" + name
+  }
 
   func rewrite(_ classDeclaration: ClassDeclSyntax) -> ClassDeclSyntax {
     let functionDeclarations = classDeclaration.memberBlock.members.compactMap {
@@ -82,7 +92,7 @@ struct ThreadSafetyRewriter {
   private var lockDeclaration: VariableDeclSyntax {
     try! VariableDeclSyntax(
       """
-      private let lock = NSLock()
+      private let \(raw: lockName) = NSLock()
       """
     )
   }
@@ -105,31 +115,44 @@ struct ThreadSafetyRewriter {
     }
 
     let name = identifierPattern.identifier.text
-    let backingName = "_" + name
+    let backing_ = backingName(for: name)
     // `CallsCount` is the one tracked property with no explicit type annotation — it relies on
     // inference from its `= 0` initializer. Every other tracked property annotates its type.
     let type = binding.typeAnnotation?.type.trimmed.description ?? "Int"
+    // The property may already have been rewritten to a specific access level (by
+    // AccessLevelModifierRewriter, which runs first) — that access level must survive onto the
+    // accessor we generate here, or every tracked property silently regresses to `internal`
+    // regardless of what the rest of the class is. The backing field is always `private`
+    // regardless: it's a new implementation detail, never meant to be exposed.
+    //
+    // Reduced to a plain string rather than interpolating the modifiers node directly: the node
+    // carries its own leading/trailing trivia from wherever it previously sat, which can make the
+    // rebuilt declaration fail to parse as a single VariableDeclSyntax.
+    let modifiersText =
+      variableDeclaration.modifiers.isEmpty
+      ? ""
+      : variableDeclaration.modifiers.map(\.name.text).joined(separator: " ") + " "
 
     let backing: VariableDeclSyntax
     if let initializer = binding.initializer {
       backing = try! VariableDeclSyntax(
         """
-        private var \(raw: backingName): \(raw: type) = \(initializer.value.trimmed)
+        private var \(raw: backing_): \(raw: type) = \(initializer.value.trimmed)
         """
       )
     } else {
       backing = try! VariableDeclSyntax(
         """
-        private var \(raw: backingName): \(raw: type)
+        private var \(raw: backing_): \(raw: type)
         """
       )
     }
 
     let accessor = try! VariableDeclSyntax(
       """
-      var \(raw: name): \(raw: type) {
-          get { lock.lock(); defer { lock.unlock() }; return \(raw: backingName) }
-          set { lock.lock(); defer { lock.unlock() }; \(raw: backingName) = newValue }
+      \(raw: modifiersText)var \(raw: name): \(raw: type) {
+          get { \(raw: lockName).lock(); defer { \(raw: lockName).unlock() }; return \(raw: backing_) }
+          set { \(raw: lockName).lock(); defer { \(raw: lockName).unlock() }; \(raw: backing_) = newValue }
       }
       """
     )
@@ -161,9 +184,9 @@ struct ThreadSafetyRewriter {
     let statements = Array(body.statements)
     guard statements.count >= bookkeepingCount else { return functionDeclaration }
 
+    let callsCountName = callsCountFactory.variableIdentifier(variablePrefix: variablePrefix).text
     var renames: [String: TokenSyntax] = [
-      callsCountFactory.variableIdentifier(variablePrefix: variablePrefix).text:
-        .identifier("_" + callsCountFactory.variableIdentifier(variablePrefix: variablePrefix).text)
+      callsCountName: .identifier(backingName(for: callsCountName))
     ]
     if hasTrackedParameters {
       let argumentsName = receivedArgumentsFactory.variableIdentifier(
@@ -172,8 +195,8 @@ struct ThreadSafetyRewriter {
       let invocationsName = receivedInvocationsFactory.variableIdentifier(
         variablePrefix: variablePrefix
       ).text
-      renames[argumentsName] = .identifier("_" + argumentsName)
-      renames[invocationsName] = .identifier("_" + invocationsName)
+      renames[argumentsName] = .identifier(backingName(for: argumentsName))
+      renames[invocationsName] = .identifier(backingName(for: invocationsName))
     }
 
     let renamer = RenameIdentifierRewriter(renames: renames)
@@ -208,12 +231,12 @@ struct ThreadSafetyRewriter {
 
     let newStatements: [CodeBlockItemSyntax] =
       [codeBlockItem(ExprSyntax("""
-        lock.lock()
+        \(raw: lockName).lock()
         """))]
       + bookkeepingStatements
       + snapshotStatements
       + [codeBlockItem(ExprSyntax("""
-        lock.unlock()
+        \(raw: lockName).unlock()
         """))]
       + remainingStatements
 
@@ -231,18 +254,18 @@ struct ThreadSafetyRewriter {
     for name: TokenSyntax,
     propertyTypes: [String: String]
   ) -> CodeBlockItemSyntax {
-    let backingName = TokenSyntax.identifier("_" + name.text)
+    let backing_ = TokenSyntax.identifier(backingName(for: name.text))
     let declaration: VariableDeclSyntax
     if let type = propertyTypes[name.text] {
       declaration = try! VariableDeclSyntax(
         """
-        let \(name): \(raw: type) = \(backingName)
+        let \(name): \(raw: type) = \(backing_)
         """
       )
     } else {
       declaration = try! VariableDeclSyntax(
         """
-        let \(name) = \(backingName)
+        let \(name) = \(backing_)
         """
       )
     }
