@@ -129,12 +129,30 @@
 ///   }
 ///   ```
 ///
+/// - `threadSafe` (optional, default `false`):
+///   When `true`, every tracked property is guarded by a shared lock, and each function's own
+///   bookkeeping (call count, received arguments/invocations) runs as one atomic locked step —
+///   so the generated spy is safe to observe from concurrent, unstructured `Task`s. Use this when
+///   a spy may be called from more than one in-flight `Task` at once; the default (`false`)
+///   matches the original, unsynchronized behavior.
+///   Example:
+///   ```swift
+///   @Spyable(threadSafe: true)
+///   protocol ConcurrentServiceProtocol {
+///       func fetch() async -> String
+///   }
+///   ```
+///
 /// ### Notes:
 /// - The `@Spyable` macro should only be applied to protocols. Applying it to other declarations will result in an error.
 /// - The generated spy class name is suffixed with `Spy` (e.g., `ServiceProtocolSpy`).
 ///
 @attached(peer, names: suffixed(Spy))
-public macro Spyable(behindPreprocessorFlag: String? = "DEBUG", accessLevel: SpyAccessLevel? = nil) =
+public macro Spyable(
+  behindPreprocessorFlag: String? = "DEBUG",
+  accessLevel: SpyAccessLevel? = nil,
+  threadSafe: Bool = false
+) =
   #externalMacro(
     module: "SpyableMacro",
     type: "SpyableMacro"
