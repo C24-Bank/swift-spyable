@@ -13,6 +13,9 @@ public enum SpyableMacro: PeerMacro {
     // Extract the protocol declaration
     let protocolDeclaration = try extractor.extractProtocolDeclaration(from: declaration)
 
+    // Extract the `threadSafe` option
+    let threadSafe = extractor.extractThreadSafety(from: node, in: context)
+
     // Generate the initial spy class declaration
     var spyClassDeclaration = try spyFactory.classDeclaration(for: protocolDeclaration)
 
@@ -21,6 +24,12 @@ public enum SpyableMacro: PeerMacro {
       for: node, protocolDeclaration: protocolDeclaration, context: context)
     {
       spyClassDeclaration = rewriteSpyClass(spyClassDeclaration, withAccessLevel: accessLevel)
+    }
+
+    // Guard the generated spy's tracked state with a shared lock, so it can be safely observed
+    // from concurrent, unstructured Tasks.
+    if threadSafe {
+      spyClassDeclaration = ThreadSafetyRewriter().rewrite(spyClassDeclaration)
     }
 
     // Handle preprocessor flag

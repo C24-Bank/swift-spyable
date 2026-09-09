@@ -138,7 +138,7 @@ struct ReceivedArgumentsFactory {
     )
   }
 
-  private func variableIdentifier(
+  func variableIdentifier(
     variablePrefix: String,
     parameterList: FunctionParameterListSyntax
   ) -> TokenSyntax {

@@ -556,6 +556,467 @@ final class UT_SpyableMacro: XCTestCase {
     )
   }
 
+  // MARK: - `threadSafe` argument
+
+  func testMacroWithThreadSafeArgument() {
+    let protocolDeclaration = """
+      protocol ServiceProtocol {
+          var data: Data { get }
+          func fetch(text: String) async -> Decimal
+          func isReady() -> Bool
+          func load() async throws
+      }
+      """
+
+    assertMacroExpansion(
+      """
+      @Spyable(threadSafe: true)
+      \(protocolDeclaration)
+      """,
+      expandedSource: """
+
+        protocol ServiceProtocol {
+            var data: Data { get }
+            func fetch(text: String) async -> Decimal
+            func isReady() -> Bool
+            func load() async throws
+        }
+
+        #if DEBUG
+        class ServiceProtocolSpy: ServiceProtocol, @unchecked Sendable {
+            init() {
+            }
+            private let __spyableLock = NSLock()
+            var data: Data {
+                get {
+                    underlyingData
+                }
+                set {
+                    underlyingData = newValue
+                }
+            }
+            private var __spyable_underlyingData: (Data)!
+            var underlyingData: (Data)! {
+                get {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    return __spyable_underlyingData
+                }
+                set {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    __spyable_underlyingData = newValue
+                }
+            }
+            private var __spyable_fetchTextCallsCount: Int = 0
+            var fetchTextCallsCount: Int {
+                get {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    return __spyable_fetchTextCallsCount
+                }
+                set {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    __spyable_fetchTextCallsCount = newValue
+                }
+            }
+            var fetchTextCalled: Bool {
+                return fetchTextCallsCount > 0
+            }
+            private var __spyable_fetchTextReceivedText: String?
+            var fetchTextReceivedText: String? {
+                get {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    return __spyable_fetchTextReceivedText
+                }
+                set {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    __spyable_fetchTextReceivedText = newValue
+                }
+            }
+            private var __spyable_fetchTextReceivedInvocations: [String] = []
+            var fetchTextReceivedInvocations: [String] {
+                get {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    return __spyable_fetchTextReceivedInvocations
+                }
+                set {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    __spyable_fetchTextReceivedInvocations = newValue
+                }
+            }
+            private var __spyable_fetchTextReturnValue: Decimal!
+            var fetchTextReturnValue: Decimal! {
+                get {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    return __spyable_fetchTextReturnValue
+                }
+                set {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    __spyable_fetchTextReturnValue = newValue
+                }
+            }
+            private var __spyable_fetchTextClosure: ((String) async -> Decimal)?
+            var fetchTextClosure: ((String) async -> Decimal)? {
+                get {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    return __spyable_fetchTextClosure
+                }
+                set {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    __spyable_fetchTextClosure = newValue
+                }
+            }
+            func fetch(text: String) async -> Decimal {
+                __spyableLock.lock()
+                __spyable_fetchTextCallsCount += 1
+                __spyable_fetchTextReceivedText = (text)
+                __spyable_fetchTextReceivedInvocations.append((text))
+                let fetchTextClosure: ((String) async -> Decimal)? = __spyable_fetchTextClosure
+                let fetchTextReturnValue: Decimal! = __spyable_fetchTextReturnValue
+                __spyableLock.unlock()
+                if fetchTextClosure != nil {
+                    return await fetchTextClosure!(text)
+                } else {
+                    return fetchTextReturnValue
+                }
+            }
+            private var __spyable_isReadyCallsCount: Int = 0
+            var isReadyCallsCount: Int {
+                get {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    return __spyable_isReadyCallsCount
+                }
+                set {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    __spyable_isReadyCallsCount = newValue
+                }
+            }
+            var isReadyCalled: Bool {
+                return isReadyCallsCount > 0
+            }
+            private var __spyable_isReadyReturnValue: Bool!
+            var isReadyReturnValue: Bool! {
+                get {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    return __spyable_isReadyReturnValue
+                }
+                set {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    __spyable_isReadyReturnValue = newValue
+                }
+            }
+            private var __spyable_isReadyClosure: (() -> Bool)?
+            var isReadyClosure: (() -> Bool)? {
+                get {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    return __spyable_isReadyClosure
+                }
+                set {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    __spyable_isReadyClosure = newValue
+                }
+            }
+            func isReady() -> Bool {
+                __spyableLock.lock()
+                __spyable_isReadyCallsCount += 1
+                let isReadyClosure: (() -> Bool)? = __spyable_isReadyClosure
+                let isReadyReturnValue: Bool! = __spyable_isReadyReturnValue
+                __spyableLock.unlock()
+                if isReadyClosure != nil {
+                    return isReadyClosure!()
+                } else {
+                    return isReadyReturnValue
+                }
+            }
+            private var __spyable_loadCallsCount: Int = 0
+            var loadCallsCount: Int {
+                get {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    return __spyable_loadCallsCount
+                }
+                set {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    __spyable_loadCallsCount = newValue
+                }
+            }
+            var loadCalled: Bool {
+                return loadCallsCount > 0
+            }
+            private var __spyable_loadThrowableError: (any Error)?
+            var loadThrowableError: (any Error)? {
+                get {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    return __spyable_loadThrowableError
+                }
+                set {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    __spyable_loadThrowableError = newValue
+                }
+            }
+            private var __spyable_loadClosure: (() async throws -> Void)?
+            var loadClosure: (() async throws -> Void)? {
+                get {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    return __spyable_loadClosure
+                }
+                set {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    __spyable_loadClosure = newValue
+                }
+            }
+            func load() async throws {
+                __spyableLock.lock()
+                __spyable_loadCallsCount += 1
+                let loadThrowableError: (any Error)? = __spyable_loadThrowableError
+                let loadClosure: (() async throws -> Void)? = __spyable_loadClosure
+                __spyableLock.unlock()
+                if let loadThrowableError {
+                    throw loadThrowableError
+                }
+                try await loadClosure?()
+            }
+        }
+        #endif
+        """,
+      macros: sut
+    )
+  }
+
+  func testMacroWithThreadSafeArgumentAndPublicAccessLevel() {
+    let protocolDeclaration = """
+      protocol ServiceProtocol {
+          func fetch(text: String) -> Int
+      }
+      """
+
+    assertMacroExpansion(
+      """
+      @Spyable(accessLevel: .public, threadSafe: true)
+      \(protocolDeclaration)
+      """,
+      expandedSource: """
+
+        protocol ServiceProtocol {
+            func fetch(text: String) -> Int
+        }
+
+        #if DEBUG
+        public class ServiceProtocolSpy: ServiceProtocol, @unchecked Sendable {
+            public init() {
+            }
+            private let __spyableLock = NSLock()
+            private var __spyable_fetchTextCallsCount: Int = 0
+            public var fetchTextCallsCount: Int {
+                get {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    return __spyable_fetchTextCallsCount
+                }
+                set {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    __spyable_fetchTextCallsCount = newValue
+                }
+            }
+            public var fetchTextCalled: Bool {
+                return fetchTextCallsCount > 0
+            }
+            private var __spyable_fetchTextReceivedText: String?
+            public var fetchTextReceivedText: String? {
+                get {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    return __spyable_fetchTextReceivedText
+                }
+                set {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    __spyable_fetchTextReceivedText = newValue
+                }
+            }
+            private var __spyable_fetchTextReceivedInvocations: [String] = []
+            public var fetchTextReceivedInvocations: [String] {
+                get {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    return __spyable_fetchTextReceivedInvocations
+                }
+                set {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    __spyable_fetchTextReceivedInvocations = newValue
+                }
+            }
+            private var __spyable_fetchTextReturnValue: Int!
+            public var fetchTextReturnValue: Int! {
+                get {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    return __spyable_fetchTextReturnValue
+                }
+                set {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    __spyable_fetchTextReturnValue = newValue
+                }
+            }
+            private var __spyable_fetchTextClosure: ((String) -> Int)?
+            public var fetchTextClosure: ((String) -> Int)? {
+                get {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    return __spyable_fetchTextClosure
+                }
+                set {
+                    __spyableLock.lock();
+                    defer {
+                        __spyableLock.unlock()
+                    };
+                    __spyable_fetchTextClosure = newValue
+                }
+            }
+            public
+            func fetch(text: String) -> Int {
+                __spyableLock.lock()
+                __spyable_fetchTextCallsCount += 1
+                __spyable_fetchTextReceivedText = (text)
+                __spyable_fetchTextReceivedInvocations.append((text))
+                let fetchTextClosure: ((String) -> Int)? = __spyable_fetchTextClosure
+                let fetchTextReturnValue: Int! = __spyable_fetchTextReturnValue
+                __spyableLock.unlock()
+                if fetchTextClosure != nil {
+                    return fetchTextClosure!(text)
+                } else {
+                    return fetchTextReturnValue
+                }
+            }
+        }
+        #endif
+        """,
+      macros: sut
+    )
+  }
+
+  func testMacroWithThreadSafeArgumentFromVariable() {
+    let protocolDeclaration = "protocol MyProtocol {}"
+
+    assertMacroExpansion(
+      """
+      let myCustomFlag = true
+
+      @Spyable(threadSafe: myCustomFlag)
+      \(protocolDeclaration)
+      """,
+      expandedSource: """
+        let myCustomFlag = true
+        \(protocolDeclaration)
+
+        #if DEBUG
+        class MyProtocolSpy: MyProtocol, @unchecked Sendable {
+            init() {
+            }
+        }
+        #endif
+        """,
+      diagnostics: [
+        DiagnosticSpec(
+          message: "The `threadSafe` argument requires a static boolean literal",
+          line: 3,
+          column: 1
+        )
+      ],
+      macros: sut
+    )
+  }
+
   func testPolymorphismOverloadedMethodsWithDifferentReturnTypesOnly() {
     let protocolDeclaration = """
       protocol OverloadedReturnTypesProtocol {

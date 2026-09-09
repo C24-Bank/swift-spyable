@@ -37,7 +37,7 @@ struct CallsCountFactory {
     )
   }
 
-  private func variableIdentifier(variablePrefix: String) -> TokenSyntax {
+  func variableIdentifier(variablePrefix: String) -> TokenSyntax {
     TokenSyntax.identifier(variablePrefix + "CallsCount")
   }
 }

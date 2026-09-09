@@ -211,7 +211,7 @@ private func parameterList(
 /// Optimized polymorphism detector that lazily computes variable prefixes
 /// only when polymorphism is detected, avoiding expensive dictionary creation
 /// for protocols with unique method signatures
-private final class PolymorphismDetector {
+final class PolymorphismDetector {
   private let functions: [FunctionDeclSyntax]
   private let prefixFactory: VariablePrefixFactory
 

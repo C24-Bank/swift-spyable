@@ -107,7 +107,7 @@ struct ReturnValueFactory {
     return ReturnStmtSyntax(expression: expression)
   }
 
-  private func variableIdentifier(variablePrefix: String) -> TokenSyntax {
+  func variableIdentifier(variablePrefix: String) -> TokenSyntax {
     TokenSyntax.identifier(variablePrefix + "ReturnValue")
   }
 }
