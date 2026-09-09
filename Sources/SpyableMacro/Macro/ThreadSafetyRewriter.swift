@@ -230,14 +230,22 @@ struct ThreadSafetyRewriter {
     }
 
     let newStatements: [CodeBlockItemSyntax] =
-      [codeBlockItem(ExprSyntax("""
-        \(raw: lockName).lock()
-        """))]
+      [
+        codeBlockItem(
+          ExprSyntax(
+            """
+            \(raw: lockName).lock()
+            """))
+      ]
       + bookkeepingStatements
       + snapshotStatements
-      + [codeBlockItem(ExprSyntax("""
-        \(raw: lockName).unlock()
-        """))]
+      + [
+        codeBlockItem(
+          ExprSyntax(
+            """
+            \(raw: lockName).unlock()
+            """))
+      ]
       + remainingStatements
 
     var newFunction = functionDeclaration
