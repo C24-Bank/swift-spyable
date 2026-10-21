@@ -54,6 +54,7 @@ final class UT_SpyableMacro: XCTestCase {
         public class ServiceProtocolSpy: ServiceProtocol, @unchecked Sendable {
             public init() {
             }
+            private let __spyableLedger: SpyableLedger? = SpyableLedger.current
             public var name: String {
                 get {
                     underlyingName
@@ -85,27 +86,65 @@ final class UT_SpyableMacro: XCTestCase {
             public var underlyingAdded: (() -> Void)!
             public
             var removed: (() -> Void)?
-            public var logoutCallsCount = 0
+            private var __spyable_logoutCallsCount: Int = 0
+            public var logoutCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "logout")
+                    return __spyable_logoutCallsCount
+                }
+                set {
+                    __spyable_logoutCallsCount = newValue
+                }
+            }
             public var logoutCalled: Bool {
                 return logoutCallsCount > 0
             }
             public var logoutClosure: (() -> Void)?
             public func logout() {
-                logoutCallsCount += 1
+                __spyableLedger?.record(self, "logout", "ServiceProtocolSpy.logout()")
+                __spyable_logoutCallsCount += 1
                 logoutClosure?()
             }
-            public var initializeNameSecondNameCallsCount = 0
+            private var __spyable_initializeNameSecondNameCallsCount: Int = 0
+            public var initializeNameSecondNameCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "initializeNameSecondName")
+                    return __spyable_initializeNameSecondNameCallsCount
+                }
+                set {
+                    __spyable_initializeNameSecondNameCallsCount = newValue
+                }
+            }
             public var initializeNameSecondNameCalled: Bool {
                 return initializeNameSecondNameCallsCount > 0
             }
-            public var initializeNameSecondNameReceivedArguments: (name: String, secondName: String?)?
-            public var initializeNameSecondNameReceivedInvocations: [(name: String, secondName: String?)] = []
+            private var __spyable_initializeNameSecondNameReceivedArguments: (name: String, secondName: String?)?
+            public var initializeNameSecondNameReceivedArguments: (name: String, secondName: String?)? {
+                get {
+                    __spyableLedger?.markVerified(self, "initializeNameSecondName")
+                    return __spyable_initializeNameSecondNameReceivedArguments
+                }
+                set {
+                    __spyable_initializeNameSecondNameReceivedArguments = newValue
+                }
+            }
+            private var __spyable_initializeNameSecondNameReceivedInvocations: [(name: String, secondName: String?)] = []
+            public var initializeNameSecondNameReceivedInvocations: [(name: String, secondName: String?)] {
+                get {
+                    __spyableLedger?.markVerified(self, "initializeNameSecondName")
+                    return __spyable_initializeNameSecondNameReceivedInvocations
+                }
+                set {
+                    __spyable_initializeNameSecondNameReceivedInvocations = newValue
+                }
+            }
             public var initializeNameSecondNameClosure: ((String, String?) -> Void)?
             public
             func initialize(name: String, secondName: String?) {
-                initializeNameSecondNameCallsCount += 1
-                initializeNameSecondNameReceivedArguments = (name, secondName)
-                initializeNameSecondNameReceivedInvocations.append((name, secondName))
+                __spyableLedger?.record(self, "initializeNameSecondName", "ServiceProtocolSpy.initialize(name:secondName:)")
+                __spyable_initializeNameSecondNameCallsCount += 1
+                __spyable_initializeNameSecondNameReceivedArguments = (name, secondName)
+                __spyable_initializeNameSecondNameReceivedInvocations.append((name, secondName))
                 initializeNameSecondNameClosure?(name, secondName)
             }
             public var fetchConfigCallsCount = 0
@@ -146,62 +185,148 @@ final class UT_SpyableMacro: XCTestCase {
                     return fetchDataReturnValue
                 }
             }
-            public var fetchUsernameContextCompletionCallsCount = 0
+            private var __spyable_fetchUsernameContextCompletionCallsCount: Int = 0
+            public var fetchUsernameContextCompletionCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "fetchUsernameContextCompletion")
+                    return __spyable_fetchUsernameContextCompletionCallsCount
+                }
+                set {
+                    __spyable_fetchUsernameContextCompletionCallsCount = newValue
+                }
+            }
             public var fetchUsernameContextCompletionCalled: Bool {
                 return fetchUsernameContextCompletionCallsCount > 0
             }
-            public var fetchUsernameContextCompletionReceivedArguments: (context: String, completion: (String) -> Void)?
-            public var fetchUsernameContextCompletionReceivedInvocations: [(context: String, completion: (String) -> Void)] = []
+            private var __spyable_fetchUsernameContextCompletionReceivedArguments: (context: String, completion: (String) -> Void)?
+            public var fetchUsernameContextCompletionReceivedArguments: (context: String, completion: (String) -> Void)? {
+                get {
+                    __spyableLedger?.markVerified(self, "fetchUsernameContextCompletion")
+                    return __spyable_fetchUsernameContextCompletionReceivedArguments
+                }
+                set {
+                    __spyable_fetchUsernameContextCompletionReceivedArguments = newValue
+                }
+            }
+            private var __spyable_fetchUsernameContextCompletionReceivedInvocations: [(context: String, completion: (String) -> Void)] = []
+            public var fetchUsernameContextCompletionReceivedInvocations: [(context: String, completion: (String) -> Void)] {
+                get {
+                    __spyableLedger?.markVerified(self, "fetchUsernameContextCompletion")
+                    return __spyable_fetchUsernameContextCompletionReceivedInvocations
+                }
+                set {
+                    __spyable_fetchUsernameContextCompletionReceivedInvocations = newValue
+                }
+            }
             public var fetchUsernameContextCompletionClosure: ((String, @escaping (String) -> Void) -> Void)?
             public
             func fetchUsername(context: String, completion: @escaping (String) -> Void) {
-                fetchUsernameContextCompletionCallsCount += 1
-                fetchUsernameContextCompletionReceivedArguments = (context, completion)
-                fetchUsernameContextCompletionReceivedInvocations.append((context, completion))
+                __spyableLedger?.record(self, "fetchUsernameContextCompletion", "ServiceProtocolSpy.fetchUsername(context:completion:)")
+                __spyable_fetchUsernameContextCompletionCallsCount += 1
+                __spyable_fetchUsernameContextCompletionReceivedArguments = (context, completion)
+                __spyable_fetchUsernameContextCompletionReceivedInvocations.append((context, completion))
                 fetchUsernameContextCompletionClosure?(context, completion)
             }
-            public var onTapBackContextActionCallsCount = 0
+            private var __spyable_onTapBackContextActionCallsCount: Int = 0
+            public var onTapBackContextActionCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "onTapBackContextAction")
+                    return __spyable_onTapBackContextActionCallsCount
+                }
+                set {
+                    __spyable_onTapBackContextActionCallsCount = newValue
+                }
+            }
             public var onTapBackContextActionCalled: Bool {
                 return onTapBackContextActionCallsCount > 0
             }
             public var onTapBackContextActionClosure: ((String, () -> Void) -> Void)?
             public
             func onTapBack(context: String, action: () -> Void) {
-                onTapBackContextActionCallsCount += 1
+                __spyableLedger?.record(self, "onTapBackContextAction", "ServiceProtocolSpy.onTapBack(context:action:)")
+                __spyable_onTapBackContextActionCallsCount += 1
                 onTapBackContextActionClosure?(context, action)
             }
-            public var onTapNextContextActionCallsCount = 0
+            private var __spyable_onTapNextContextActionCallsCount: Int = 0
+            public var onTapNextContextActionCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "onTapNextContextAction")
+                    return __spyable_onTapNextContextActionCallsCount
+                }
+                set {
+                    __spyable_onTapNextContextActionCallsCount = newValue
+                }
+            }
             public var onTapNextContextActionCalled: Bool {
                 return onTapNextContextActionCallsCount > 0
             }
             public var onTapNextContextActionClosure: ((String, @Sendable () -> Void) -> Void)?
             public
             func onTapNext(context: String, action: @Sendable () -> Void) {
-                onTapNextContextActionCallsCount += 1
+                __spyableLedger?.record(self, "onTapNextContextAction", "ServiceProtocolSpy.onTapNext(context:action:)")
+                __spyable_onTapNextContextActionCallsCount += 1
                 onTapNextContextActionClosure?(context, action)
             }
-            public var assertCallsCount = 0
+            private var __spyable_assertCallsCount: Int = 0
+            public var assertCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "assert")
+                    return __spyable_assertCallsCount
+                }
+                set {
+                    __spyable_assertCallsCount = newValue
+                }
+            }
             public var assertCalled: Bool {
                 return assertCallsCount > 0
             }
             public var assertClosure: ((@autoclosure () -> String) -> Void)?
             public
             func assert(_ message: @autoclosure () -> String) {
-                assertCallsCount += 1
+                __spyableLedger?.record(self, "assert", "ServiceProtocolSpy.assert(_:)")
+                __spyable_assertCallsCount += 1
                 assertClosure?(message())
             }
-            public var useGenericsValues1Values2Values3CallsCount = 0
+            private var __spyable_useGenericsValues1Values2Values3CallsCount: Int = 0
+            public var useGenericsValues1Values2Values3CallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "useGenericsValues1Values2Values3")
+                    return __spyable_useGenericsValues1Values2Values3CallsCount
+                }
+                set {
+                    __spyable_useGenericsValues1Values2Values3CallsCount = newValue
+                }
+            }
             public var useGenericsValues1Values2Values3Called: Bool {
                 return useGenericsValues1Values2Values3CallsCount > 0
             }
-            public var useGenericsValues1Values2Values3ReceivedArguments: (values1: [Any], values2: Array<Any>, values3: (Any, Any, Int))?
-            public var useGenericsValues1Values2Values3ReceivedInvocations: [(values1: [Any], values2: Array<Any>, values3: (Any, Any, Int))] = []
+            private var __spyable_useGenericsValues1Values2Values3ReceivedArguments: (values1: [Any], values2: Array<Any>, values3: (Any, Any, Int))?
+            public var useGenericsValues1Values2Values3ReceivedArguments: (values1: [Any], values2: Array<Any>, values3: (Any, Any, Int))? {
+                get {
+                    __spyableLedger?.markVerified(self, "useGenericsValues1Values2Values3")
+                    return __spyable_useGenericsValues1Values2Values3ReceivedArguments
+                }
+                set {
+                    __spyable_useGenericsValues1Values2Values3ReceivedArguments = newValue
+                }
+            }
+            private var __spyable_useGenericsValues1Values2Values3ReceivedInvocations: [(values1: [Any], values2: Array<Any>, values3: (Any, Any, Int))] = []
+            public var useGenericsValues1Values2Values3ReceivedInvocations: [(values1: [Any], values2: Array<Any>, values3: (Any, Any, Int))] {
+                get {
+                    __spyableLedger?.markVerified(self, "useGenericsValues1Values2Values3")
+                    return __spyable_useGenericsValues1Values2Values3ReceivedInvocations
+                }
+                set {
+                    __spyable_useGenericsValues1Values2Values3ReceivedInvocations = newValue
+                }
+            }
             public var useGenericsValues1Values2Values3Closure: (([Any], Array<Any>, (Any, Any, Int)) -> Void)?
             public
             func useGenerics<T, U>(values1: [T], values2: Array<U>, values3: (T, U, Int)) {
-                useGenericsValues1Values2Values3CallsCount += 1
-                useGenericsValues1Values2Values3ReceivedArguments = (values1, values2, values3)
-                useGenericsValues1Values2Values3ReceivedInvocations.append((values1, values2, values3))
+                __spyableLedger?.record(self, "useGenericsValues1Values2Values3", "ServiceProtocolSpy.useGenerics(values1:values2:values3:)")
+                __spyable_useGenericsValues1Values2Values3CallsCount += 1
+                __spyable_useGenericsValues1Values2Values3ReceivedArguments = (values1, values2, values3)
+                __spyable_useGenericsValues1Values2Values3ReceivedInvocations.append((values1, values2, values3))
                 useGenericsValues1Values2Values3Closure?(values1, values2, values3)
             }
         }
@@ -414,21 +539,50 @@ final class UT_SpyableMacro: XCTestCase {
           \(mapping.spyClassAccessLevel) class ServiceProtocolSpy: ServiceProtocol, @unchecked Sendable {
               \(mapping.spyClassAccessLevel) init() {
               }
+              private let __spyableLedger: SpyableLedger? = SpyableLedger.current
               \(mapping.spyClassAccessLevel)
               var removed: (() -> Void)?
-              \(mapping.spyClassAccessLevel) var fetchUsernameContextCompletionCallsCount = 0
+              private var __spyable_fetchUsernameContextCompletionCallsCount: Int = 0
+              \(mapping.spyClassAccessLevel) var fetchUsernameContextCompletionCallsCount: Int {
+                  get {
+                      __spyableLedger?.markVerified(self, "fetchUsernameContextCompletion")
+                      return __spyable_fetchUsernameContextCompletionCallsCount
+                  }
+                  set {
+                      __spyable_fetchUsernameContextCompletionCallsCount = newValue
+                  }
+              }
               \(mapping.spyClassAccessLevel) var fetchUsernameContextCompletionCalled: Bool {
                   return fetchUsernameContextCompletionCallsCount > 0
               }
-              \(mapping.spyClassAccessLevel) var fetchUsernameContextCompletionReceivedArguments: (context: String, completion: (String) -> Void)?
-              \(mapping.spyClassAccessLevel) var fetchUsernameContextCompletionReceivedInvocations: [(context: String, completion: (String) -> Void)] = []
+              private var __spyable_fetchUsernameContextCompletionReceivedArguments: (context: String, completion: (String) -> Void)?
+              \(mapping.spyClassAccessLevel) var fetchUsernameContextCompletionReceivedArguments: (context: String, completion: (String) -> Void)? {
+                  get {
+                      __spyableLedger?.markVerified(self, "fetchUsernameContextCompletion")
+                      return __spyable_fetchUsernameContextCompletionReceivedArguments
+                  }
+                  set {
+                      __spyable_fetchUsernameContextCompletionReceivedArguments = newValue
+                  }
+              }
+              private var __spyable_fetchUsernameContextCompletionReceivedInvocations: [(context: String, completion: (String) -> Void)] = []
+              \(mapping.spyClassAccessLevel) var fetchUsernameContextCompletionReceivedInvocations: [(context: String, completion: (String) -> Void)] {
+                  get {
+                      __spyableLedger?.markVerified(self, "fetchUsernameContextCompletion")
+                      return __spyable_fetchUsernameContextCompletionReceivedInvocations
+                  }
+                  set {
+                      __spyable_fetchUsernameContextCompletionReceivedInvocations = newValue
+                  }
+              }
               \(mapping.spyClassAccessLevel) var fetchUsernameContextCompletionClosure: ((String, @escaping (String) -> Void) -> Void)?
               \(mapping.spyClassAccessLevel)
 
               func fetchUsername(context: String, completion: @escaping (String) -> Void) {
-                  fetchUsernameContextCompletionCallsCount += 1
-                  fetchUsernameContextCompletionReceivedArguments = (context, completion)
-                  fetchUsernameContextCompletionReceivedInvocations.append((context, completion))
+                  __spyableLedger?.record(self, "fetchUsernameContextCompletion", "ServiceProtocolSpy.fetchUsername(context:completion:)")
+                  __spyable_fetchUsernameContextCompletionCallsCount += 1
+                  __spyable_fetchUsernameContextCompletionReceivedArguments = (context, completion)
+                  __spyable_fetchUsernameContextCompletionReceivedInvocations.append((context, completion))
                   fetchUsernameContextCompletionClosure?(context, completion)
               }
           }
@@ -470,21 +624,50 @@ final class UT_SpyableMacro: XCTestCase {
           \(mapping.spyClassAccessLevel) class ServiceProtocolSpy: ServiceProtocol, @unchecked Sendable {
               \(mapping.spyClassAccessLevel) init() {
               }
+              private let __spyableLedger: SpyableLedger? = SpyableLedger.current
               \(mapping.spyClassAccessLevel)
               var removed: (() -> Void)?
-              \(mapping.spyClassAccessLevel) var fetchUsernameContextCompletionCallsCount = 0
+              private var __spyable_fetchUsernameContextCompletionCallsCount: Int = 0
+              \(mapping.spyClassAccessLevel) var fetchUsernameContextCompletionCallsCount: Int {
+                  get {
+                      __spyableLedger?.markVerified(self, "fetchUsernameContextCompletion")
+                      return __spyable_fetchUsernameContextCompletionCallsCount
+                  }
+                  set {
+                      __spyable_fetchUsernameContextCompletionCallsCount = newValue
+                  }
+              }
               \(mapping.spyClassAccessLevel) var fetchUsernameContextCompletionCalled: Bool {
                   return fetchUsernameContextCompletionCallsCount > 0
               }
-              \(mapping.spyClassAccessLevel) var fetchUsernameContextCompletionReceivedArguments: (context: String, completion: (String) -> Void)?
-              \(mapping.spyClassAccessLevel) var fetchUsernameContextCompletionReceivedInvocations: [(context: String, completion: (String) -> Void)] = []
+              private var __spyable_fetchUsernameContextCompletionReceivedArguments: (context: String, completion: (String) -> Void)?
+              \(mapping.spyClassAccessLevel) var fetchUsernameContextCompletionReceivedArguments: (context: String, completion: (String) -> Void)? {
+                  get {
+                      __spyableLedger?.markVerified(self, "fetchUsernameContextCompletion")
+                      return __spyable_fetchUsernameContextCompletionReceivedArguments
+                  }
+                  set {
+                      __spyable_fetchUsernameContextCompletionReceivedArguments = newValue
+                  }
+              }
+              private var __spyable_fetchUsernameContextCompletionReceivedInvocations: [(context: String, completion: (String) -> Void)] = []
+              \(mapping.spyClassAccessLevel) var fetchUsernameContextCompletionReceivedInvocations: [(context: String, completion: (String) -> Void)] {
+                  get {
+                      __spyableLedger?.markVerified(self, "fetchUsernameContextCompletion")
+                      return __spyable_fetchUsernameContextCompletionReceivedInvocations
+                  }
+                  set {
+                      __spyable_fetchUsernameContextCompletionReceivedInvocations = newValue
+                  }
+              }
               \(mapping.spyClassAccessLevel) var fetchUsernameContextCompletionClosure: ((String, @escaping (String) -> Void) -> Void)?
               \(mapping.spyClassAccessLevel)
 
               func fetchUsername(context: String, completion: @escaping (String) -> Void) {
-                  fetchUsernameContextCompletionCallsCount += 1
-                  fetchUsernameContextCompletionReceivedArguments = (context, completion)
-                  fetchUsernameContextCompletionReceivedInvocations.append((context, completion))
+                  __spyableLedger?.record(self, "fetchUsernameContextCompletion", "ServiceProtocolSpy.fetchUsername(context:completion:)")
+                  __spyable_fetchUsernameContextCompletionCallsCount += 1
+                  __spyable_fetchUsernameContextCompletionReceivedArguments = (context, completion)
+                  __spyable_fetchUsernameContextCompletionReceivedInvocations.append((context, completion))
                   fetchUsernameContextCompletionClosure?(context, completion)
               }
           }
@@ -517,21 +700,50 @@ final class UT_SpyableMacro: XCTestCase {
         fileprivate class ServiceProtocolSpy: ServiceProtocol, @unchecked Sendable {
             fileprivate init() {
             }
+            private let __spyableLedger: SpyableLedger? = SpyableLedger.current
             fileprivate
             var removed: (() -> Void)?
-            fileprivate var fetchUsernameContextCompletionCallsCount = 0
+            private var __spyable_fetchUsernameContextCompletionCallsCount: Int = 0
+            fileprivate var fetchUsernameContextCompletionCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "fetchUsernameContextCompletion")
+                    return __spyable_fetchUsernameContextCompletionCallsCount
+                }
+                set {
+                    __spyable_fetchUsernameContextCompletionCallsCount = newValue
+                }
+            }
             fileprivate var fetchUsernameContextCompletionCalled: Bool {
                 return fetchUsernameContextCompletionCallsCount > 0
             }
-            fileprivate var fetchUsernameContextCompletionReceivedArguments: (context: String, completion: (String) -> Void)?
-            fileprivate var fetchUsernameContextCompletionReceivedInvocations: [(context: String, completion: (String) -> Void)] = []
+            private var __spyable_fetchUsernameContextCompletionReceivedArguments: (context: String, completion: (String) -> Void)?
+            fileprivate var fetchUsernameContextCompletionReceivedArguments: (context: String, completion: (String) -> Void)? {
+                get {
+                    __spyableLedger?.markVerified(self, "fetchUsernameContextCompletion")
+                    return __spyable_fetchUsernameContextCompletionReceivedArguments
+                }
+                set {
+                    __spyable_fetchUsernameContextCompletionReceivedArguments = newValue
+                }
+            }
+            private var __spyable_fetchUsernameContextCompletionReceivedInvocations: [(context: String, completion: (String) -> Void)] = []
+            fileprivate var fetchUsernameContextCompletionReceivedInvocations: [(context: String, completion: (String) -> Void)] {
+                get {
+                    __spyableLedger?.markVerified(self, "fetchUsernameContextCompletion")
+                    return __spyable_fetchUsernameContextCompletionReceivedInvocations
+                }
+                set {
+                    __spyable_fetchUsernameContextCompletionReceivedInvocations = newValue
+                }
+            }
             fileprivate var fetchUsernameContextCompletionClosure: ((String, @escaping (String) -> Void) -> Void)?
             fileprivate
 
             func fetchUsername(context: String, completion: @escaping (String) -> Void) {
-                fetchUsernameContextCompletionCallsCount += 1
-                fetchUsernameContextCompletionReceivedArguments = (context, completion)
-                fetchUsernameContextCompletionReceivedInvocations.append((context, completion))
+                __spyableLedger?.record(self, "fetchUsernameContextCompletion", "ServiceProtocolSpy.fetchUsername(context:completion:)")
+                __spyable_fetchUsernameContextCompletionCallsCount += 1
+                __spyable_fetchUsernameContextCompletionReceivedArguments = (context, completion)
+                __spyable_fetchUsernameContextCompletionReceivedInvocations.append((context, completion))
                 fetchUsernameContextCompletionClosure?(context, completion)
             }
         }
@@ -599,6 +811,7 @@ final class UT_SpyableMacro: XCTestCase {
             init() {
             }
             private let __spyableLock = NSLock()
+            private let __spyableLedger: SpyableLedger? = SpyableLedger.current
             var data: Data {
                 get {
                     underlyingData
@@ -795,6 +1008,7 @@ final class UT_SpyableMacro: XCTestCase {
             private var __spyable_loadCallsCount: Int = 0
             var loadCallsCount: Int {
                 get {
+                    __spyableLedger?.markVerified(self, "load");
                     __spyableLock.lock();
                     defer {
                         __spyableLock.unlock()
@@ -847,6 +1061,7 @@ final class UT_SpyableMacro: XCTestCase {
                 }
             }
             func load() async throws {
+                __spyableLedger?.record(self, "load", "ServiceProtocolSpy.load()")
                 __spyableLock.lock()
                 __spyable_loadCallsCount += 1
                 let loadThrowableError: (any Error)? = __spyable_loadThrowableError
@@ -1055,13 +1270,24 @@ final class UT_SpyableMacro: XCTestCase {
         class OverloadedReturnTypesProtocolSpy: OverloadedReturnTypesProtocol, @unchecked Sendable {
             init() {
             }
-            var doSomethingCallsCount = 0
+            private let __spyableLedger: SpyableLedger? = SpyableLedger.current
+            private var __spyable_doSomethingCallsCount: Int = 0
+            var doSomethingCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "doSomething")
+                    return __spyable_doSomethingCallsCount
+                }
+                set {
+                    __spyable_doSomethingCallsCount = newValue
+                }
+            }
             var doSomethingCalled: Bool {
                 return doSomethingCallsCount > 0
             }
             var doSomethingClosure: (() -> Void)?
             func doSomething() {
-                doSomethingCallsCount += 1
+                __spyableLedger?.record(self, "doSomething", "OverloadedReturnTypesProtocolSpy.doSomething()")
+                __spyable_doSomethingCallsCount += 1
                 doSomethingClosure?()
             }
             var doSomethingIntCallsCount = 0
@@ -1181,30 +1407,87 @@ final class UT_SpyableMacro: XCTestCase {
         class OverloadedParameterTypesProtocolSpy: OverloadedParameterTypesProtocol, @unchecked Sendable {
             init() {
             }
-            var computeValueIntCallsCount = 0
+            private let __spyableLedger: SpyableLedger? = SpyableLedger.current
+            private var __spyable_computeValueIntCallsCount: Int = 0
+            var computeValueIntCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "computeValueInt")
+                    return __spyable_computeValueIntCallsCount
+                }
+                set {
+                    __spyable_computeValueIntCallsCount = newValue
+                }
+            }
             var computeValueIntCalled: Bool {
                 return computeValueIntCallsCount > 0
             }
-            var computeValueIntReceivedValue: Int?
-            var computeValueIntReceivedInvocations: [Int] = []
+            private var __spyable_computeValueIntReceivedValue: Int?
+            var computeValueIntReceivedValue: Int? {
+                get {
+                    __spyableLedger?.markVerified(self, "computeValueInt")
+                    return __spyable_computeValueIntReceivedValue
+                }
+                set {
+                    __spyable_computeValueIntReceivedValue = newValue
+                }
+            }
+            private var __spyable_computeValueIntReceivedInvocations: [Int] = []
+            var computeValueIntReceivedInvocations: [Int] {
+                get {
+                    __spyableLedger?.markVerified(self, "computeValueInt")
+                    return __spyable_computeValueIntReceivedInvocations
+                }
+                set {
+                    __spyable_computeValueIntReceivedInvocations = newValue
+                }
+            }
             var computeValueIntClosure: ((Int) -> Void)?
             func compute(value: Int) {
-                computeValueIntCallsCount += 1
-                computeValueIntReceivedValue = (value)
-                computeValueIntReceivedInvocations.append((value))
+                __spyableLedger?.record(self, "computeValueInt", "OverloadedParameterTypesProtocolSpy.compute(value:)")
+                __spyable_computeValueIntCallsCount += 1
+                __spyable_computeValueIntReceivedValue = (value)
+                __spyable_computeValueIntReceivedInvocations.append((value))
                 computeValueIntClosure?(value)
             }
-            var computeForStringCallsCount = 0
+            private var __spyable_computeForStringCallsCount: Int = 0
+            var computeForStringCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "computeForString")
+                    return __spyable_computeForStringCallsCount
+                }
+                set {
+                    __spyable_computeForStringCallsCount = newValue
+                }
+            }
             var computeForStringCalled: Bool {
                 return computeForStringCallsCount > 0
             }
-            var computeForStringReceivedId: String?
-            var computeForStringReceivedInvocations: [String] = []
+            private var __spyable_computeForStringReceivedId: String?
+            var computeForStringReceivedId: String? {
+                get {
+                    __spyableLedger?.markVerified(self, "computeForString")
+                    return __spyable_computeForStringReceivedId
+                }
+                set {
+                    __spyable_computeForStringReceivedId = newValue
+                }
+            }
+            private var __spyable_computeForStringReceivedInvocations: [String] = []
+            var computeForStringReceivedInvocations: [String] {
+                get {
+                    __spyableLedger?.markVerified(self, "computeForString")
+                    return __spyable_computeForStringReceivedInvocations
+                }
+                set {
+                    __spyable_computeForStringReceivedInvocations = newValue
+                }
+            }
             var computeForStringClosure: ((String) -> Void)?
             func compute(for id: String) {
-                computeForStringCallsCount += 1
-                computeForStringReceivedId = (id)
-                computeForStringReceivedInvocations.append((id))
+                __spyableLedger?.record(self, "computeForString", "OverloadedParameterTypesProtocolSpy.compute(for:)")
+                __spyable_computeForStringCallsCount += 1
+                __spyable_computeForStringReceivedId = (id)
+                __spyable_computeForStringReceivedInvocations.append((id))
                 computeForStringClosure?(id)
             }
             var computeForSetStringArrayStringCallsCount = 0
@@ -1793,17 +2076,46 @@ final class UT_SpyableMacro: XCTestCase {
         class GenericConstraintsProtocolSpy: GenericConstraintsProtocol, @unchecked Sendable {
             init() {
             }
-            var processValueTCallsCount = 0
+            private let __spyableLedger: SpyableLedger? = SpyableLedger.current
+            private var __spyable_processValueTCallsCount: Int = 0
+            var processValueTCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "processValueT")
+                    return __spyable_processValueTCallsCount
+                }
+                set {
+                    __spyable_processValueTCallsCount = newValue
+                }
+            }
             var processValueTCalled: Bool {
                 return processValueTCallsCount > 0
             }
-            var processValueTReceivedValue: Any?
-            var processValueTReceivedInvocations: [Any] = []
+            private var __spyable_processValueTReceivedValue: Any?
+            var processValueTReceivedValue: Any? {
+                get {
+                    __spyableLedger?.markVerified(self, "processValueT")
+                    return __spyable_processValueTReceivedValue
+                }
+                set {
+                    __spyable_processValueTReceivedValue = newValue
+                }
+            }
+            private var __spyable_processValueTReceivedInvocations: [Any] = []
+            var processValueTReceivedInvocations: [Any] {
+                get {
+                    __spyableLedger?.markVerified(self, "processValueT")
+                    return __spyable_processValueTReceivedInvocations
+                }
+                set {
+                    __spyable_processValueTReceivedInvocations = newValue
+                }
+            }
             var processValueTClosure: ((Any) -> Void)?
             func process<T: Codable>(value: T) {
-                processValueTCallsCount += 1
-                processValueTReceivedValue = (value)
-                processValueTReceivedInvocations.append((value))
+                __spyableLedger?.record(self, "processValueT", "GenericConstraintsProtocolSpy.process(value:)")
+                __spyable_processValueTCallsCount += 1
+                __spyable_processValueTReceivedValue = (value)
+                __spyable_processValueTReceivedInvocations.append((value))
                 processValueTClosure?(value)
             }
             var processValueTTCallsCount = 0
@@ -1842,17 +2154,45 @@ final class UT_SpyableMacro: XCTestCase {
                     return processValueTStringReturnValue
                 }
             }
-            var transformValueTCallsCount = 0
+            private var __spyable_transformValueTCallsCount: Int = 0
+            var transformValueTCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "transformValueT")
+                    return __spyable_transformValueTCallsCount
+                }
+                set {
+                    __spyable_transformValueTCallsCount = newValue
+                }
+            }
             var transformValueTCalled: Bool {
                 return transformValueTCallsCount > 0
             }
-            var transformValueTReceivedValue: Any?
-            var transformValueTReceivedInvocations: [Any] = []
+            private var __spyable_transformValueTReceivedValue: Any?
+            var transformValueTReceivedValue: Any? {
+                get {
+                    __spyableLedger?.markVerified(self, "transformValueT")
+                    return __spyable_transformValueTReceivedValue
+                }
+                set {
+                    __spyable_transformValueTReceivedValue = newValue
+                }
+            }
+            private var __spyable_transformValueTReceivedInvocations: [Any] = []
+            var transformValueTReceivedInvocations: [Any] {
+                get {
+                    __spyableLedger?.markVerified(self, "transformValueT")
+                    return __spyable_transformValueTReceivedInvocations
+                }
+                set {
+                    __spyable_transformValueTReceivedInvocations = newValue
+                }
+            }
             var transformValueTClosure: ((Any) -> Void)?
             func transform<T: Codable & Hashable>(value: T) {
-                transformValueTCallsCount += 1
-                transformValueTReceivedValue = (value)
-                transformValueTReceivedInvocations.append((value))
+                __spyableLedger?.record(self, "transformValueT", "GenericConstraintsProtocolSpy.transform(value:)")
+                __spyable_transformValueTCallsCount += 1
+                __spyable_transformValueTReceivedValue = (value)
+                __spyable_transformValueTReceivedInvocations.append((value))
                 transformValueTClosure?(value)
             }
             var transformValueTTCallsCount = 0
@@ -1891,17 +2231,45 @@ final class UT_SpyableMacro: XCTestCase {
                     return transformValueTArrayTReturnValue as! [T]
                 }
             }
-            var convertValueTCallsCount = 0
+            private var __spyable_convertValueTCallsCount: Int = 0
+            var convertValueTCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "convertValueT")
+                    return __spyable_convertValueTCallsCount
+                }
+                set {
+                    __spyable_convertValueTCallsCount = newValue
+                }
+            }
             var convertValueTCalled: Bool {
                 return convertValueTCallsCount > 0
             }
-            var convertValueTReceivedValue: Any?
-            var convertValueTReceivedInvocations: [Any] = []
+            private var __spyable_convertValueTReceivedValue: Any?
+            var convertValueTReceivedValue: Any? {
+                get {
+                    __spyableLedger?.markVerified(self, "convertValueT")
+                    return __spyable_convertValueTReceivedValue
+                }
+                set {
+                    __spyable_convertValueTReceivedValue = newValue
+                }
+            }
+            private var __spyable_convertValueTReceivedInvocations: [Any] = []
+            var convertValueTReceivedInvocations: [Any] {
+                get {
+                    __spyableLedger?.markVerified(self, "convertValueT")
+                    return __spyable_convertValueTReceivedInvocations
+                }
+                set {
+                    __spyable_convertValueTReceivedInvocations = newValue
+                }
+            }
             var convertValueTClosure: ((Any) -> Void)?
             func convert<T>(value: T) where T: Equatable {
-                convertValueTCallsCount += 1
-                convertValueTReceivedValue = (value)
-                convertValueTReceivedInvocations.append((value))
+                __spyableLedger?.record(self, "convertValueT", "GenericConstraintsProtocolSpy.convert(value:)")
+                __spyable_convertValueTCallsCount += 1
+                __spyable_convertValueTReceivedValue = (value)
+                __spyable_convertValueTReceivedInvocations.append((value))
                 convertValueTClosure?(value)
             }
             var convertValueTTCallsCount = 0
@@ -1940,17 +2308,45 @@ final class UT_SpyableMacro: XCTestCase {
                     return convertValueTBoolReturnValue
                 }
             }
-            var convertValueTOtherUCallsCount = 0
+            private var __spyable_convertValueTOtherUCallsCount: Int = 0
+            var convertValueTOtherUCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "convertValueTOtherU")
+                    return __spyable_convertValueTOtherUCallsCount
+                }
+                set {
+                    __spyable_convertValueTOtherUCallsCount = newValue
+                }
+            }
             var convertValueTOtherUCalled: Bool {
                 return convertValueTOtherUCallsCount > 0
             }
-            var convertValueTOtherUReceivedArguments: (value: Any, other: Any)?
-            var convertValueTOtherUReceivedInvocations: [(value: Any, other: Any)] = []
+            private var __spyable_convertValueTOtherUReceivedArguments: (value: Any, other: Any)?
+            var convertValueTOtherUReceivedArguments: (value: Any, other: Any)? {
+                get {
+                    __spyableLedger?.markVerified(self, "convertValueTOtherU")
+                    return __spyable_convertValueTOtherUReceivedArguments
+                }
+                set {
+                    __spyable_convertValueTOtherUReceivedArguments = newValue
+                }
+            }
+            private var __spyable_convertValueTOtherUReceivedInvocations: [(value: Any, other: Any)] = []
+            var convertValueTOtherUReceivedInvocations: [(value: Any, other: Any)] {
+                get {
+                    __spyableLedger?.markVerified(self, "convertValueTOtherU")
+                    return __spyable_convertValueTOtherUReceivedInvocations
+                }
+                set {
+                    __spyable_convertValueTOtherUReceivedInvocations = newValue
+                }
+            }
             var convertValueTOtherUClosure: ((Any, Any) -> Void)?
             func convert<T, U>(value: T, other: U) where T: Equatable, U: Hashable {
-                convertValueTOtherUCallsCount += 1
-                convertValueTOtherUReceivedArguments = (value, other)
-                convertValueTOtherUReceivedInvocations.append((value, other))
+                __spyableLedger?.record(self, "convertValueTOtherU", "GenericConstraintsProtocolSpy.convert(value:other:)")
+                __spyable_convertValueTOtherUCallsCount += 1
+                __spyable_convertValueTOtherUReceivedArguments = (value, other)
+                __spyable_convertValueTOtherUReceivedInvocations.append((value, other))
                 convertValueTOtherUClosure?(value, other)
             }
             var convertValueTOtherUBoolCallsCount = 0
@@ -2008,17 +2404,46 @@ final class UT_SpyableMacro: XCTestCase {
         class ProtocolCompositionsProtocolSpy: ProtocolCompositionsProtocol, @unchecked Sendable {
             init() {
             }
-            var handleValueCodableSendableCallsCount = 0
+            private let __spyableLedger: SpyableLedger? = SpyableLedger.current
+            private var __spyable_handleValueCodableSendableCallsCount: Int = 0
+            var handleValueCodableSendableCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "handleValueCodableSendable")
+                    return __spyable_handleValueCodableSendableCallsCount
+                }
+                set {
+                    __spyable_handleValueCodableSendableCallsCount = newValue
+                }
+            }
             var handleValueCodableSendableCalled: Bool {
                 return handleValueCodableSendableCallsCount > 0
             }
-            var handleValueCodableSendableReceivedValue: Codable & Sendable?
-            var handleValueCodableSendableReceivedInvocations: [Codable & Sendable] = []
+            private var __spyable_handleValueCodableSendableReceivedValue: Codable & Sendable?
+            var handleValueCodableSendableReceivedValue: Codable & Sendable? {
+                get {
+                    __spyableLedger?.markVerified(self, "handleValueCodableSendable")
+                    return __spyable_handleValueCodableSendableReceivedValue
+                }
+                set {
+                    __spyable_handleValueCodableSendableReceivedValue = newValue
+                }
+            }
+            private var __spyable_handleValueCodableSendableReceivedInvocations: [Codable & Sendable] = []
+            var handleValueCodableSendableReceivedInvocations: [Codable & Sendable] {
+                get {
+                    __spyableLedger?.markVerified(self, "handleValueCodableSendable")
+                    return __spyable_handleValueCodableSendableReceivedInvocations
+                }
+                set {
+                    __spyable_handleValueCodableSendableReceivedInvocations = newValue
+                }
+            }
             var handleValueCodableSendableClosure: ((Codable & Sendable) -> Void)?
             func handle(value: Codable & Sendable) {
-                handleValueCodableSendableCallsCount += 1
-                handleValueCodableSendableReceivedValue = (value)
-                handleValueCodableSendableReceivedInvocations.append((value))
+                __spyableLedger?.record(self, "handleValueCodableSendable", "ProtocolCompositionsProtocolSpy.handle(value:)")
+                __spyable_handleValueCodableSendableCallsCount += 1
+                __spyable_handleValueCodableSendableReceivedValue = (value)
+                __spyable_handleValueCodableSendableReceivedInvocations.append((value))
                 handleValueCodableSendableClosure?(value)
             }
             var handleValueCodableSendableStringCallsCount = 0
@@ -2057,17 +2482,45 @@ final class UT_SpyableMacro: XCTestCase {
                     return handleValueCodableSendableBoolReturnValue
                 }
             }
-            var handleValueCodableHashableSendableCallsCount = 0
+            private var __spyable_handleValueCodableHashableSendableCallsCount: Int = 0
+            var handleValueCodableHashableSendableCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "handleValueCodableHashableSendable")
+                    return __spyable_handleValueCodableHashableSendableCallsCount
+                }
+                set {
+                    __spyable_handleValueCodableHashableSendableCallsCount = newValue
+                }
+            }
             var handleValueCodableHashableSendableCalled: Bool {
                 return handleValueCodableHashableSendableCallsCount > 0
             }
-            var handleValueCodableHashableSendableReceivedValue: Codable & Hashable & Sendable?
-            var handleValueCodableHashableSendableReceivedInvocations: [Codable & Hashable & Sendable] = []
+            private var __spyable_handleValueCodableHashableSendableReceivedValue: Codable & Hashable & Sendable?
+            var handleValueCodableHashableSendableReceivedValue: Codable & Hashable & Sendable? {
+                get {
+                    __spyableLedger?.markVerified(self, "handleValueCodableHashableSendable")
+                    return __spyable_handleValueCodableHashableSendableReceivedValue
+                }
+                set {
+                    __spyable_handleValueCodableHashableSendableReceivedValue = newValue
+                }
+            }
+            private var __spyable_handleValueCodableHashableSendableReceivedInvocations: [Codable & Hashable & Sendable] = []
+            var handleValueCodableHashableSendableReceivedInvocations: [Codable & Hashable & Sendable] {
+                get {
+                    __spyableLedger?.markVerified(self, "handleValueCodableHashableSendable")
+                    return __spyable_handleValueCodableHashableSendableReceivedInvocations
+                }
+                set {
+                    __spyable_handleValueCodableHashableSendableReceivedInvocations = newValue
+                }
+            }
             var handleValueCodableHashableSendableClosure: ((Codable & Hashable & Sendable) -> Void)?
             func handle(value: Codable & Hashable & Sendable) {
-                handleValueCodableHashableSendableCallsCount += 1
-                handleValueCodableHashableSendableReceivedValue = (value)
-                handleValueCodableHashableSendableReceivedInvocations.append((value))
+                __spyableLedger?.record(self, "handleValueCodableHashableSendable", "ProtocolCompositionsProtocolSpy.handle(value:)")
+                __spyable_handleValueCodableHashableSendableCallsCount += 1
+                __spyable_handleValueCodableHashableSendableReceivedValue = (value)
+                __spyable_handleValueCodableHashableSendableReceivedInvocations.append((value))
                 handleValueCodableHashableSendableClosure?(value)
             }
             var handleValueCodableHashableSendableIntCallsCount = 0
@@ -2152,22 +2605,42 @@ final class UT_SpyableMacro: XCTestCase {
                     return createWithIntCodableHashableReturnValue
                 }
             }
-            var processItemanyCodableSendableHandleranyCodableSendableVoidCallsCount = 0
+            private var __spyable_processItemanyCodableSendableHandleranyCodableSendableVoidCallsCount: Int = 0
+            var processItemanyCodableSendableHandleranyCodableSendableVoidCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "processItemanyCodableSendableHandleranyCodableSendableVoid")
+                    return __spyable_processItemanyCodableSendableHandleranyCodableSendableVoidCallsCount
+                }
+                set {
+                    __spyable_processItemanyCodableSendableHandleranyCodableSendableVoidCallsCount = newValue
+                }
+            }
             var processItemanyCodableSendableHandleranyCodableSendableVoidCalled: Bool {
                 return processItemanyCodableSendableHandleranyCodableSendableVoidCallsCount > 0
             }
             var processItemanyCodableSendableHandleranyCodableSendableVoidClosure: ((any Codable & Sendable, (any Codable & Sendable) -> Void) -> Void)?
             func process(item: any Codable & Sendable, handler: (any Codable & Sendable) -> Void) {
-                processItemanyCodableSendableHandleranyCodableSendableVoidCallsCount += 1
+                __spyableLedger?.record(self, "processItemanyCodableSendableHandleranyCodableSendableVoid", "ProtocolCompositionsProtocolSpy.process(item:handler:)")
+                __spyable_processItemanyCodableSendableHandleranyCodableSendableVoidCallsCount += 1
                 processItemanyCodableSendableHandleranyCodableSendableVoidClosure?(item, handler)
             }
-            var processItemanyCodableSendableHandleranyCodableSendableStringCallsCount = 0
+            private var __spyable_processItemanyCodableSendableHandleranyCodableSendableStringCallsCount: Int = 0
+            var processItemanyCodableSendableHandleranyCodableSendableStringCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "processItemanyCodableSendableHandleranyCodableSendableString")
+                    return __spyable_processItemanyCodableSendableHandleranyCodableSendableStringCallsCount
+                }
+                set {
+                    __spyable_processItemanyCodableSendableHandleranyCodableSendableStringCallsCount = newValue
+                }
+            }
             var processItemanyCodableSendableHandleranyCodableSendableStringCalled: Bool {
                 return processItemanyCodableSendableHandleranyCodableSendableStringCallsCount > 0
             }
             var processItemanyCodableSendableHandleranyCodableSendableStringClosure: ((any Codable & Sendable, (any Codable & Sendable) -> String) -> Void)?
             func process(item: any Codable & Sendable, handler: (any Codable & Sendable) -> String) {
-                processItemanyCodableSendableHandleranyCodableSendableStringCallsCount += 1
+                __spyableLedger?.record(self, "processItemanyCodableSendableHandleranyCodableSendableString", "ProtocolCompositionsProtocolSpy.process(item:handler:)")
+                __spyable_processItemanyCodableSendableHandleranyCodableSendableStringCallsCount += 1
                 processItemanyCodableSendableHandleranyCodableSendableStringClosure?(item, handler)
             }
         }
@@ -2212,18 +2685,47 @@ final class UT_SpyableMacro: XCTestCase {
         class AssociatedTypesProtocolSpy<Item, Container: Collection>: AssociatedTypesProtocol, @unchecked Sendable {
             init() {
             }
-            var processItemItemCallsCount = 0
+            private let __spyableLedger: SpyableLedger? = SpyableLedger.current
+            private var __spyable_processItemItemCallsCount: Int = 0
+            var processItemItemCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "processItemItem")
+                    return __spyable_processItemItemCallsCount
+                }
+                set {
+                    __spyable_processItemItemCallsCount = newValue
+                }
+            }
             var processItemItemCalled: Bool {
                 return processItemItemCallsCount > 0
             }
-            var processItemItemReceivedItem: Item?
-            var processItemItemReceivedInvocations: [Item] = []
+            private var __spyable_processItemItemReceivedItem: Item?
+            var processItemItemReceivedItem: Item? {
+                get {
+                    __spyableLedger?.markVerified(self, "processItemItem")
+                    return __spyable_processItemItemReceivedItem
+                }
+                set {
+                    __spyable_processItemItemReceivedItem = newValue
+                }
+            }
+            private var __spyable_processItemItemReceivedInvocations: [Item] = []
+            var processItemItemReceivedInvocations: [Item] {
+                get {
+                    __spyableLedger?.markVerified(self, "processItemItem")
+                    return __spyable_processItemItemReceivedInvocations
+                }
+                set {
+                    __spyable_processItemItemReceivedInvocations = newValue
+                }
+            }
             var processItemItemClosure: ((Item) -> Void)?
 
             func process(item: Item) {
-                processItemItemCallsCount += 1
-                processItemItemReceivedItem = (item)
-                processItemItemReceivedInvocations.append((item))
+                __spyableLedger?.record(self, "processItemItem", "AssociatedTypesProtocolSpy.process(item:)")
+                __spyable_processItemItemCallsCount += 1
+                __spyable_processItemItemReceivedItem = (item)
+                __spyable_processItemItemReceivedInvocations.append((item))
                 processItemItemClosure?(item)
             }
             var processItemItemItemCallsCount = 0
@@ -2262,17 +2764,45 @@ final class UT_SpyableMacro: XCTestCase {
                     return processItemItemStringReturnValue
                 }
             }
-            var processItemsArrayItemCallsCount = 0
+            private var __spyable_processItemsArrayItemCallsCount: Int = 0
+            var processItemsArrayItemCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "processItemsArrayItem")
+                    return __spyable_processItemsArrayItemCallsCount
+                }
+                set {
+                    __spyable_processItemsArrayItemCallsCount = newValue
+                }
+            }
             var processItemsArrayItemCalled: Bool {
                 return processItemsArrayItemCallsCount > 0
             }
-            var processItemsArrayItemReceivedItems: [Item]?
-            var processItemsArrayItemReceivedInvocations: [[Item]] = []
+            private var __spyable_processItemsArrayItemReceivedItems: [Item]?
+            var processItemsArrayItemReceivedItems: [Item]? {
+                get {
+                    __spyableLedger?.markVerified(self, "processItemsArrayItem")
+                    return __spyable_processItemsArrayItemReceivedItems
+                }
+                set {
+                    __spyable_processItemsArrayItemReceivedItems = newValue
+                }
+            }
+            private var __spyable_processItemsArrayItemReceivedInvocations: [[Item]] = []
+            var processItemsArrayItemReceivedInvocations: [[Item]] {
+                get {
+                    __spyableLedger?.markVerified(self, "processItemsArrayItem")
+                    return __spyable_processItemsArrayItemReceivedInvocations
+                }
+                set {
+                    __spyable_processItemsArrayItemReceivedInvocations = newValue
+                }
+            }
             var processItemsArrayItemClosure: (([Item]) -> Void)?
             func process(items: [Item]) {
-                processItemsArrayItemCallsCount += 1
-                processItemsArrayItemReceivedItems = (items)
-                processItemsArrayItemReceivedInvocations.append((items))
+                __spyableLedger?.record(self, "processItemsArrayItem", "AssociatedTypesProtocolSpy.process(items:)")
+                __spyable_processItemsArrayItemCallsCount += 1
+                __spyable_processItemsArrayItemReceivedItems = (items)
+                __spyable_processItemsArrayItemReceivedInvocations.append((items))
                 processItemsArrayItemClosure?(items)
             }
             var processItemsArrayItemArrayItemCallsCount = 0
@@ -2293,17 +2823,45 @@ final class UT_SpyableMacro: XCTestCase {
                     return processItemsArrayItemArrayItemReturnValue
                 }
             }
-            var transformContainerContainerCallsCount = 0
+            private var __spyable_transformContainerContainerCallsCount: Int = 0
+            var transformContainerContainerCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "transformContainerContainer")
+                    return __spyable_transformContainerContainerCallsCount
+                }
+                set {
+                    __spyable_transformContainerContainerCallsCount = newValue
+                }
+            }
             var transformContainerContainerCalled: Bool {
                 return transformContainerContainerCallsCount > 0
             }
-            var transformContainerContainerReceivedContainer: Container?
-            var transformContainerContainerReceivedInvocations: [Container] = []
+            private var __spyable_transformContainerContainerReceivedContainer: Container?
+            var transformContainerContainerReceivedContainer: Container? {
+                get {
+                    __spyableLedger?.markVerified(self, "transformContainerContainer")
+                    return __spyable_transformContainerContainerReceivedContainer
+                }
+                set {
+                    __spyable_transformContainerContainerReceivedContainer = newValue
+                }
+            }
+            private var __spyable_transformContainerContainerReceivedInvocations: [Container] = []
+            var transformContainerContainerReceivedInvocations: [Container] {
+                get {
+                    __spyableLedger?.markVerified(self, "transformContainerContainer")
+                    return __spyable_transformContainerContainerReceivedInvocations
+                }
+                set {
+                    __spyable_transformContainerContainerReceivedInvocations = newValue
+                }
+            }
             var transformContainerContainerClosure: ((Container) -> Void)?
             func transform(container: Container) {
-                transformContainerContainerCallsCount += 1
-                transformContainerContainerReceivedContainer = (container)
-                transformContainerContainerReceivedInvocations.append((container))
+                __spyableLedger?.record(self, "transformContainerContainer", "AssociatedTypesProtocolSpy.transform(container:)")
+                __spyable_transformContainerContainerCallsCount += 1
+                __spyable_transformContainerContainerReceivedContainer = (container)
+                __spyable_transformContainerContainerReceivedInvocations.append((container))
                 transformContainerContainerClosure?(container)
             }
             var transformContainerContainerContainerCallsCount = 0
@@ -2342,17 +2900,45 @@ final class UT_SpyableMacro: XCTestCase {
                     return transformContainerContainerIntReturnValue
                 }
             }
-            var handleItemSelfCallsCount = 0
+            private var __spyable_handleItemSelfCallsCount: Int = 0
+            var handleItemSelfCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "handleItemSelf")
+                    return __spyable_handleItemSelfCallsCount
+                }
+                set {
+                    __spyable_handleItemSelfCallsCount = newValue
+                }
+            }
             var handleItemSelfCalled: Bool {
                 return handleItemSelfCallsCount > 0
             }
-            var handleItemSelfReceivedItem: Self?
-            var handleItemSelfReceivedInvocations: [Self] = []
+            private var __spyable_handleItemSelfReceivedItem: Self?
+            var handleItemSelfReceivedItem: Self? {
+                get {
+                    __spyableLedger?.markVerified(self, "handleItemSelf")
+                    return __spyable_handleItemSelfReceivedItem
+                }
+                set {
+                    __spyable_handleItemSelfReceivedItem = newValue
+                }
+            }
+            private var __spyable_handleItemSelfReceivedInvocations: [Self] = []
+            var handleItemSelfReceivedInvocations: [Self] {
+                get {
+                    __spyableLedger?.markVerified(self, "handleItemSelf")
+                    return __spyable_handleItemSelfReceivedInvocations
+                }
+                set {
+                    __spyable_handleItemSelfReceivedInvocations = newValue
+                }
+            }
             var handleItemSelfClosure: ((Self) -> Void)?
             func handle(item: Self) {
-                handleItemSelfCallsCount += 1
-                handleItemSelfReceivedItem = (item)
-                handleItemSelfReceivedInvocations.append((item))
+                __spyableLedger?.record(self, "handleItemSelf", "AssociatedTypesProtocolSpy.handle(item:)")
+                __spyable_handleItemSelfCallsCount += 1
+                __spyable_handleItemSelfReceivedItem = (item)
+                __spyable_handleItemSelfReceivedInvocations.append((item))
                 handleItemSelfClosure?(item)
             }
             var handleItemSelfSelfCallsCount = 0
@@ -2472,27 +3058,66 @@ final class UT_SpyableMacro: XCTestCase {
         class FunctionAttributesProtocolSpy: FunctionAttributesProtocol, @unchecked Sendable {
             init() {
             }
-            var processHandlerVoidCallsCount = 0
+            private let __spyableLedger: SpyableLedger? = SpyableLedger.current
+            private var __spyable_processHandlerVoidCallsCount: Int = 0
+            var processHandlerVoidCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "processHandlerVoid")
+                    return __spyable_processHandlerVoidCallsCount
+                }
+                set {
+                    __spyable_processHandlerVoidCallsCount = newValue
+                }
+            }
             var processHandlerVoidCalled: Bool {
                 return processHandlerVoidCallsCount > 0
             }
             var processHandlerVoidClosure: ((() -> Void) -> Void)?
             // @escaping vs non-escaping closures
             func process(handler: () -> Void) {
-                processHandlerVoidCallsCount += 1
+                __spyableLedger?.record(self, "processHandlerVoid", "FunctionAttributesProtocolSpy.process(handler:)")
+                __spyable_processHandlerVoidCallsCount += 1
                 processHandlerVoidClosure?(handler)
             }
-            var processHandlerescapingVoidCallsCount = 0
+            private var __spyable_processHandlerescapingVoidCallsCount: Int = 0
+            var processHandlerescapingVoidCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "processHandlerescapingVoid")
+                    return __spyable_processHandlerescapingVoidCallsCount
+                }
+                set {
+                    __spyable_processHandlerescapingVoidCallsCount = newValue
+                }
+            }
             var processHandlerescapingVoidCalled: Bool {
                 return processHandlerescapingVoidCallsCount > 0
             }
-            var processHandlerescapingVoidReceivedHandler: (() -> Void)?
-            var processHandlerescapingVoidReceivedInvocations: [() -> Void] = []
+            private var __spyable_processHandlerescapingVoidReceivedHandler: (() -> Void)?
+            var processHandlerescapingVoidReceivedHandler: (() -> Void)? {
+                get {
+                    __spyableLedger?.markVerified(self, "processHandlerescapingVoid")
+                    return __spyable_processHandlerescapingVoidReceivedHandler
+                }
+                set {
+                    __spyable_processHandlerescapingVoidReceivedHandler = newValue
+                }
+            }
+            private var __spyable_processHandlerescapingVoidReceivedInvocations: [() -> Void] = []
+            var processHandlerescapingVoidReceivedInvocations: [() -> Void] {
+                get {
+                    __spyableLedger?.markVerified(self, "processHandlerescapingVoid")
+                    return __spyable_processHandlerescapingVoidReceivedInvocations
+                }
+                set {
+                    __spyable_processHandlerescapingVoidReceivedInvocations = newValue
+                }
+            }
             var processHandlerescapingVoidClosure: ((@escaping () -> Void) -> Void)?
             func process(handler: @escaping () -> Void) {
-                processHandlerescapingVoidCallsCount += 1
-                processHandlerescapingVoidReceivedHandler = (handler)
-                processHandlerescapingVoidReceivedInvocations.append((handler))
+                __spyableLedger?.record(self, "processHandlerescapingVoid", "FunctionAttributesProtocolSpy.process(handler:)")
+                __spyable_processHandlerescapingVoidCallsCount += 1
+                __spyable_processHandlerescapingVoidReceivedHandler = (handler)
+                __spyable_processHandlerescapingVoidReceivedInvocations.append((handler))
                 processHandlerescapingVoidClosure?(handler)
             }
             var processHandlerescapingVoidStringCallsCount = 0
@@ -2513,7 +3138,16 @@ final class UT_SpyableMacro: XCTestCase {
                     return processHandlerescapingVoidStringReturnValue
                 }
             }
-            var handleActionVoidCallsCount = 0
+            private var __spyable_handleActionVoidCallsCount: Int = 0
+            var handleActionVoidCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "handleActionVoid")
+                    return __spyable_handleActionVoidCallsCount
+                }
+                set {
+                    __spyable_handleActionVoidCallsCount = newValue
+                }
+            }
             var handleActionVoidCalled: Bool {
                 return handleActionVoidCallsCount > 0
             }
@@ -2521,43 +3155,101 @@ final class UT_SpyableMacro: XCTestCase {
 
             // @Sendable closures  
             func handle(action: () -> Void) {
-                handleActionVoidCallsCount += 1
+                __spyableLedger?.record(self, "handleActionVoid", "FunctionAttributesProtocolSpy.handle(action:)")
+                __spyable_handleActionVoidCallsCount += 1
                 handleActionVoidClosure?(action)
             }
-            var handleActionSendableVoidCallsCount = 0
+            private var __spyable_handleActionSendableVoidCallsCount: Int = 0
+            var handleActionSendableVoidCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "handleActionSendableVoid")
+                    return __spyable_handleActionSendableVoidCallsCount
+                }
+                set {
+                    __spyable_handleActionSendableVoidCallsCount = newValue
+                }
+            }
             var handleActionSendableVoidCalled: Bool {
                 return handleActionSendableVoidCallsCount > 0
             }
             var handleActionSendableVoidClosure: ((@Sendable () -> Void) -> Void)?
             func handle(action: @Sendable () -> Void) {
-                handleActionSendableVoidCallsCount += 1
+                __spyableLedger?.record(self, "handleActionSendableVoid", "FunctionAttributesProtocolSpy.handle(action:)")
+                __spyable_handleActionSendableVoidCallsCount += 1
                 handleActionSendableVoidClosure?(action)
             }
-            var evaluateCallsCount = 0
+            private var __spyable_evaluateCallsCount: Int = 0
+            var evaluateCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "evaluate")
+                    return __spyable_evaluateCallsCount
+                }
+                set {
+                    __spyable_evaluateCallsCount = newValue
+                }
+            }
             var evaluateCalled: Bool {
                 return evaluateCallsCount > 0
             }
-            var evaluateReceivedExpression: String?
-            var evaluateReceivedInvocations: [String] = []
+            private var __spyable_evaluateReceivedExpression: String?
+            var evaluateReceivedExpression: String? {
+                get {
+                    __spyableLedger?.markVerified(self, "evaluate")
+                    return __spyable_evaluateReceivedExpression
+                }
+                set {
+                    __spyable_evaluateReceivedExpression = newValue
+                }
+            }
+            private var __spyable_evaluateReceivedInvocations: [String] = []
+            var evaluateReceivedInvocations: [String] {
+                get {
+                    __spyableLedger?.markVerified(self, "evaluate")
+                    return __spyable_evaluateReceivedInvocations
+                }
+                set {
+                    __spyable_evaluateReceivedInvocations = newValue
+                }
+            }
             var evaluateClosure: ((String) -> Void)?
 
             // @autoclosure parameters
             func evaluate(_ expression: String) {
-                evaluateCallsCount += 1
-                evaluateReceivedExpression = (expression)
-                evaluateReceivedInvocations.append((expression))
+                __spyableLedger?.record(self, "evaluate", "FunctionAttributesProtocolSpy.evaluate(_:)")
+                __spyable_evaluateCallsCount += 1
+                __spyable_evaluateReceivedExpression = (expression)
+                __spyable_evaluateReceivedInvocations.append((expression))
                 evaluateClosure?(expression)
             }
-            var evaluateCallsCount = 0
+            private var __spyable_evaluateCallsCount: Int = 0
+            var evaluateCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "evaluate")
+                    return __spyable_evaluateCallsCount
+                }
+                set {
+                    __spyable_evaluateCallsCount = newValue
+                }
+            }
             var evaluateCalled: Bool {
                 return evaluateCallsCount > 0
             }
             var evaluateClosure: ((@autoclosure () -> String) -> Void)?
             func evaluate(_ expression: @autoclosure () -> String) {
-                evaluateCallsCount += 1
+                __spyableLedger?.record(self, "evaluate", "FunctionAttributesProtocolSpy.evaluate(_:)")
+                __spyable_evaluateCallsCount += 1
                 evaluateClosure?(expression())
             }
-            var transformConverterStringIntCallsCount = 0
+            private var __spyable_transformConverterStringIntCallsCount: Int = 0
+            var transformConverterStringIntCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "transformConverterStringInt")
+                    return __spyable_transformConverterStringIntCallsCount
+                }
+                set {
+                    __spyable_transformConverterStringIntCallsCount = newValue
+                }
+            }
             var transformConverterStringIntCalled: Bool {
                 return transformConverterStringIntCallsCount > 0
             }
@@ -2565,29 +3257,68 @@ final class UT_SpyableMacro: XCTestCase {
 
             // Mixed scenarios with closures and @escaping/@Sendable
             func transform(converter: (String) -> Int) {
-                transformConverterStringIntCallsCount += 1
+                __spyableLedger?.record(self, "transformConverterStringInt", "FunctionAttributesProtocolSpy.transform(converter:)")
+                __spyable_transformConverterStringIntCallsCount += 1
                 transformConverterStringIntClosure?(converter)
             }
-            var transformConverterescapingStringIntCallsCount = 0
+            private var __spyable_transformConverterescapingStringIntCallsCount: Int = 0
+            var transformConverterescapingStringIntCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "transformConverterescapingStringInt")
+                    return __spyable_transformConverterescapingStringIntCallsCount
+                }
+                set {
+                    __spyable_transformConverterescapingStringIntCallsCount = newValue
+                }
+            }
             var transformConverterescapingStringIntCalled: Bool {
                 return transformConverterescapingStringIntCallsCount > 0
             }
-            var transformConverterescapingStringIntReceivedConverter: ((String) -> Int)?
-            var transformConverterescapingStringIntReceivedInvocations: [(String) -> Int] = []
+            private var __spyable_transformConverterescapingStringIntReceivedConverter: ((String) -> Int)?
+            var transformConverterescapingStringIntReceivedConverter: ((String) -> Int)? {
+                get {
+                    __spyableLedger?.markVerified(self, "transformConverterescapingStringInt")
+                    return __spyable_transformConverterescapingStringIntReceivedConverter
+                }
+                set {
+                    __spyable_transformConverterescapingStringIntReceivedConverter = newValue
+                }
+            }
+            private var __spyable_transformConverterescapingStringIntReceivedInvocations: [(String) -> Int] = []
+            var transformConverterescapingStringIntReceivedInvocations: [(String) -> Int] {
+                get {
+                    __spyableLedger?.markVerified(self, "transformConverterescapingStringInt")
+                    return __spyable_transformConverterescapingStringIntReceivedInvocations
+                }
+                set {
+                    __spyable_transformConverterescapingStringIntReceivedInvocations = newValue
+                }
+            }
             var transformConverterescapingStringIntClosure: ((@escaping (String) -> Int) -> Void)?
             func transform(converter: @escaping (String) -> Int) {
-                transformConverterescapingStringIntCallsCount += 1
-                transformConverterescapingStringIntReceivedConverter = (converter)
-                transformConverterescapingStringIntReceivedInvocations.append((converter))
+                __spyableLedger?.record(self, "transformConverterescapingStringInt", "FunctionAttributesProtocolSpy.transform(converter:)")
+                __spyable_transformConverterescapingStringIntCallsCount += 1
+                __spyable_transformConverterescapingStringIntReceivedConverter = (converter)
+                __spyable_transformConverterescapingStringIntReceivedInvocations.append((converter))
                 transformConverterescapingStringIntClosure?(converter)
             }
-            var transformConverterSendableStringIntCallsCount = 0
+            private var __spyable_transformConverterSendableStringIntCallsCount: Int = 0
+            var transformConverterSendableStringIntCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "transformConverterSendableStringInt")
+                    return __spyable_transformConverterSendableStringIntCallsCount
+                }
+                set {
+                    __spyable_transformConverterSendableStringIntCallsCount = newValue
+                }
+            }
             var transformConverterSendableStringIntCalled: Bool {
                 return transformConverterSendableStringIntCallsCount > 0
             }
             var transformConverterSendableStringIntClosure: ((@Sendable (String) -> Int) -> Void)?
             func transform(converter: @Sendable (String) -> Int) {
-                transformConverterSendableStringIntCallsCount += 1
+                __spyableLedger?.record(self, "transformConverterSendableStringInt", "FunctionAttributesProtocolSpy.transform(converter:)")
+                __spyable_transformConverterSendableStringIntCallsCount += 1
                 transformConverterSendableStringIntClosure?(converter)
             }
         }
@@ -2636,62 +3367,175 @@ final class UT_SpyableMacro: XCTestCase {
         class AsyncThrowingPolymorphismProtocolSpy: AsyncThrowingPolymorphismProtocol, @unchecked Sendable {
             init() {
             }
-            var fetchImmediateCallsCount = 0
+            private let __spyableLedger: SpyableLedger? = SpyableLedger.current
+            private var __spyable_fetchImmediateCallsCount: Int = 0
+            var fetchImmediateCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "fetchImmediate")
+                    return __spyable_fetchImmediateCallsCount
+                }
+                set {
+                    __spyable_fetchImmediateCallsCount = newValue
+                }
+            }
             var fetchImmediateCalled: Bool {
                 return fetchImmediateCallsCount > 0
             }
-            var fetchImmediateReceivedImmediate: Bool?
-            var fetchImmediateReceivedInvocations: [Bool] = []
+            private var __spyable_fetchImmediateReceivedImmediate: Bool?
+            var fetchImmediateReceivedImmediate: Bool? {
+                get {
+                    __spyableLedger?.markVerified(self, "fetchImmediate")
+                    return __spyable_fetchImmediateReceivedImmediate
+                }
+                set {
+                    __spyable_fetchImmediateReceivedImmediate = newValue
+                }
+            }
+            private var __spyable_fetchImmediateReceivedInvocations: [Bool] = []
+            var fetchImmediateReceivedInvocations: [Bool] {
+                get {
+                    __spyableLedger?.markVerified(self, "fetchImmediate")
+                    return __spyable_fetchImmediateReceivedInvocations
+                }
+                set {
+                    __spyable_fetchImmediateReceivedInvocations = newValue
+                }
+            }
             var fetchImmediateClosure: ((Bool) -> Void)?
             // Valid polymorphic functions with different parameter types and async/throwing combinations
             func fetch(immediate: Bool) {
-                fetchImmediateCallsCount += 1
-                fetchImmediateReceivedImmediate = (immediate)
-                fetchImmediateReceivedInvocations.append((immediate))
+                __spyableLedger?.record(self, "fetchImmediate", "AsyncThrowingPolymorphismProtocolSpy.fetch(immediate:)")
+                __spyable_fetchImmediateCallsCount += 1
+                __spyable_fetchImmediateReceivedImmediate = (immediate)
+                __spyable_fetchImmediateReceivedInvocations.append((immediate))
                 fetchImmediateClosure?(immediate)
             }
-            var fetchFromCallsCount = 0
+            private var __spyable_fetchFromCallsCount: Int = 0
+            var fetchFromCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "fetchFrom")
+                    return __spyable_fetchFromCallsCount
+                }
+                set {
+                    __spyable_fetchFromCallsCount = newValue
+                }
+            }
             var fetchFromCalled: Bool {
                 return fetchFromCallsCount > 0
             }
-            var fetchFromReceivedUrl: String?
-            var fetchFromReceivedInvocations: [String] = []
+            private var __spyable_fetchFromReceivedUrl: String?
+            var fetchFromReceivedUrl: String? {
+                get {
+                    __spyableLedger?.markVerified(self, "fetchFrom")
+                    return __spyable_fetchFromReceivedUrl
+                }
+                set {
+                    __spyable_fetchFromReceivedUrl = newValue
+                }
+            }
+            private var __spyable_fetchFromReceivedInvocations: [String] = []
+            var fetchFromReceivedInvocations: [String] {
+                get {
+                    __spyableLedger?.markVerified(self, "fetchFrom")
+                    return __spyable_fetchFromReceivedInvocations
+                }
+                set {
+                    __spyable_fetchFromReceivedInvocations = newValue
+                }
+            }
             var fetchFromClosure: ((String) async -> Void)?
             func fetch(from url: String) async {
-                fetchFromCallsCount += 1
-                fetchFromReceivedUrl = (url)
-                fetchFromReceivedInvocations.append((url))
+                __spyableLedger?.record(self, "fetchFrom", "AsyncThrowingPolymorphismProtocolSpy.fetch(from:)")
+                __spyable_fetchFromCallsCount += 1
+                __spyable_fetchFromReceivedUrl = (url)
+                __spyable_fetchFromReceivedInvocations.append((url))
                 await fetchFromClosure?(url)
             }
-            var fetchResourceCallsCount = 0
+            private var __spyable_fetchResourceCallsCount: Int = 0
+            var fetchResourceCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "fetchResource")
+                    return __spyable_fetchResourceCallsCount
+                }
+                set {
+                    __spyable_fetchResourceCallsCount = newValue
+                }
+            }
             var fetchResourceCalled: Bool {
                 return fetchResourceCallsCount > 0
             }
-            var fetchResourceReceivedId: Int?
-            var fetchResourceReceivedInvocations: [Int] = []
+            private var __spyable_fetchResourceReceivedId: Int?
+            var fetchResourceReceivedId: Int? {
+                get {
+                    __spyableLedger?.markVerified(self, "fetchResource")
+                    return __spyable_fetchResourceReceivedId
+                }
+                set {
+                    __spyable_fetchResourceReceivedId = newValue
+                }
+            }
+            private var __spyable_fetchResourceReceivedInvocations: [Int] = []
+            var fetchResourceReceivedInvocations: [Int] {
+                get {
+                    __spyableLedger?.markVerified(self, "fetchResource")
+                    return __spyable_fetchResourceReceivedInvocations
+                }
+                set {
+                    __spyable_fetchResourceReceivedInvocations = newValue
+                }
+            }
             var fetchResourceThrowableError: (any Error)?
             var fetchResourceClosure: ((Int) throws -> Void)?
             func fetch(resource id: Int) throws {
-                fetchResourceCallsCount += 1
-                fetchResourceReceivedId = (id)
-                fetchResourceReceivedInvocations.append((id))
+                __spyableLedger?.record(self, "fetchResource", "AsyncThrowingPolymorphismProtocolSpy.fetch(resource:)")
+                __spyable_fetchResourceCallsCount += 1
+                __spyable_fetchResourceReceivedId = (id)
+                __spyable_fetchResourceReceivedInvocations.append((id))
                 if let fetchResourceThrowableError {
                     throw fetchResourceThrowableError
                 }
                 try fetchResourceClosure?(id)
             }
-            var fetchWithTimeoutCallsCount = 0
+            private var __spyable_fetchWithTimeoutCallsCount: Int = 0
+            var fetchWithTimeoutCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "fetchWithTimeout")
+                    return __spyable_fetchWithTimeoutCallsCount
+                }
+                set {
+                    __spyable_fetchWithTimeoutCallsCount = newValue
+                }
+            }
             var fetchWithTimeoutCalled: Bool {
                 return fetchWithTimeoutCallsCount > 0
             }
-            var fetchWithTimeoutReceivedTimeout: Double?
-            var fetchWithTimeoutReceivedInvocations: [Double] = []
+            private var __spyable_fetchWithTimeoutReceivedTimeout: Double?
+            var fetchWithTimeoutReceivedTimeout: Double? {
+                get {
+                    __spyableLedger?.markVerified(self, "fetchWithTimeout")
+                    return __spyable_fetchWithTimeoutReceivedTimeout
+                }
+                set {
+                    __spyable_fetchWithTimeoutReceivedTimeout = newValue
+                }
+            }
+            private var __spyable_fetchWithTimeoutReceivedInvocations: [Double] = []
+            var fetchWithTimeoutReceivedInvocations: [Double] {
+                get {
+                    __spyableLedger?.markVerified(self, "fetchWithTimeout")
+                    return __spyable_fetchWithTimeoutReceivedInvocations
+                }
+                set {
+                    __spyable_fetchWithTimeoutReceivedInvocations = newValue
+                }
+            }
             var fetchWithTimeoutThrowableError: (any Error)?
             var fetchWithTimeoutClosure: ((Double) async throws -> Void)?
             func fetch(withTimeout timeout: Double) async throws {
-                fetchWithTimeoutCallsCount += 1
-                fetchWithTimeoutReceivedTimeout = (timeout)
-                fetchWithTimeoutReceivedInvocations.append((timeout))
+                __spyableLedger?.record(self, "fetchWithTimeout", "AsyncThrowingPolymorphismProtocolSpy.fetch(withTimeout:)")
+                __spyable_fetchWithTimeoutCallsCount += 1
+                __spyable_fetchWithTimeoutReceivedTimeout = (timeout)
+                __spyable_fetchWithTimeoutReceivedInvocations.append((timeout))
                 if let fetchWithTimeoutThrowableError {
                     throw fetchWithTimeoutThrowableError
                 }
@@ -2775,63 +3619,175 @@ final class UT_SpyableMacro: XCTestCase {
                     return loadTimeoutReturnValue
                 }
             }
-            var processIdIntCallsCount = 0
+            private var __spyable_processIdIntCallsCount: Int = 0
+            var processIdIntCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "processIdInt")
+                    return __spyable_processIdIntCallsCount
+                }
+                set {
+                    __spyable_processIdIntCallsCount = newValue
+                }
+            }
             var processIdIntCalled: Bool {
                 return processIdIntCallsCount > 0
             }
-            var processIdIntReceivedId: Int?
-            var processIdIntReceivedInvocations: [Int] = []
+            private var __spyable_processIdIntReceivedId: Int?
+            var processIdIntReceivedId: Int? {
+                get {
+                    __spyableLedger?.markVerified(self, "processIdInt")
+                    return __spyable_processIdIntReceivedId
+                }
+                set {
+                    __spyable_processIdIntReceivedId = newValue
+                }
+            }
+            private var __spyable_processIdIntReceivedInvocations: [Int] = []
+            var processIdIntReceivedInvocations: [Int] {
+                get {
+                    __spyableLedger?.markVerified(self, "processIdInt")
+                    return __spyable_processIdIntReceivedInvocations
+                }
+                set {
+                    __spyable_processIdIntReceivedInvocations = newValue
+                }
+            }
             var processIdIntClosure: ((Int) -> Void)?
 
             // Functions with different parameter count and async/throwing combinations
             func process(id: Int) {
-                processIdIntCallsCount += 1
-                processIdIntReceivedId = (id)
-                processIdIntReceivedInvocations.append((id))
+                __spyableLedger?.record(self, "processIdInt", "AsyncThrowingPolymorphismProtocolSpy.process(id:)")
+                __spyable_processIdIntCallsCount += 1
+                __spyable_processIdIntReceivedId = (id)
+                __spyable_processIdIntReceivedInvocations.append((id))
                 processIdIntClosure?(id)
             }
-            var processIdPriorityCallsCount = 0
+            private var __spyable_processIdPriorityCallsCount: Int = 0
+            var processIdPriorityCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "processIdPriority")
+                    return __spyable_processIdPriorityCallsCount
+                }
+                set {
+                    __spyable_processIdPriorityCallsCount = newValue
+                }
+            }
             var processIdPriorityCalled: Bool {
                 return processIdPriorityCallsCount > 0
             }
-            var processIdPriorityReceivedArguments: (id: Int, priority: Int)?
-            var processIdPriorityReceivedInvocations: [(id: Int, priority: Int)] = []
+            private var __spyable_processIdPriorityReceivedArguments: (id: Int, priority: Int)?
+            var processIdPriorityReceivedArguments: (id: Int, priority: Int)? {
+                get {
+                    __spyableLedger?.markVerified(self, "processIdPriority")
+                    return __spyable_processIdPriorityReceivedArguments
+                }
+                set {
+                    __spyable_processIdPriorityReceivedArguments = newValue
+                }
+            }
+            private var __spyable_processIdPriorityReceivedInvocations: [(id: Int, priority: Int)] = []
+            var processIdPriorityReceivedInvocations: [(id: Int, priority: Int)] {
+                get {
+                    __spyableLedger?.markVerified(self, "processIdPriority")
+                    return __spyable_processIdPriorityReceivedInvocations
+                }
+                set {
+                    __spyable_processIdPriorityReceivedInvocations = newValue
+                }
+            }
             var processIdPriorityClosure: ((Int, Int) async -> Void)?
             func process(id: Int, priority: Int) async {
-                processIdPriorityCallsCount += 1
-                processIdPriorityReceivedArguments = (id, priority)
-                processIdPriorityReceivedInvocations.append((id, priority))
+                __spyableLedger?.record(self, "processIdPriority", "AsyncThrowingPolymorphismProtocolSpy.process(id:priority:)")
+                __spyable_processIdPriorityCallsCount += 1
+                __spyable_processIdPriorityReceivedArguments = (id, priority)
+                __spyable_processIdPriorityReceivedInvocations.append((id, priority))
                 await processIdPriorityClosure?(id, priority)
             }
-            var processIdWithCallsCount = 0
+            private var __spyable_processIdWithCallsCount: Int = 0
+            var processIdWithCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "processIdWith")
+                    return __spyable_processIdWithCallsCount
+                }
+                set {
+                    __spyable_processIdWithCallsCount = newValue
+                }
+            }
             var processIdWithCalled: Bool {
                 return processIdWithCallsCount > 0
             }
-            var processIdWithReceivedArguments: (id: Int, config: String)?
-            var processIdWithReceivedInvocations: [(id: Int, config: String)] = []
+            private var __spyable_processIdWithReceivedArguments: (id: Int, config: String)?
+            var processIdWithReceivedArguments: (id: Int, config: String)? {
+                get {
+                    __spyableLedger?.markVerified(self, "processIdWith")
+                    return __spyable_processIdWithReceivedArguments
+                }
+                set {
+                    __spyable_processIdWithReceivedArguments = newValue
+                }
+            }
+            private var __spyable_processIdWithReceivedInvocations: [(id: Int, config: String)] = []
+            var processIdWithReceivedInvocations: [(id: Int, config: String)] {
+                get {
+                    __spyableLedger?.markVerified(self, "processIdWith")
+                    return __spyable_processIdWithReceivedInvocations
+                }
+                set {
+                    __spyable_processIdWithReceivedInvocations = newValue
+                }
+            }
             var processIdWithThrowableError: (any Error)?
             var processIdWithClosure: ((Int, String) throws -> Void)?
             func process(id: Int, with config: String) throws {
-                processIdWithCallsCount += 1
-                processIdWithReceivedArguments = (id, config)
-                processIdWithReceivedInvocations.append((id, config))
+                __spyableLedger?.record(self, "processIdWith", "AsyncThrowingPolymorphismProtocolSpy.process(id:with:)")
+                __spyable_processIdWithCallsCount += 1
+                __spyable_processIdWithReceivedArguments = (id, config)
+                __spyable_processIdWithReceivedInvocations.append((id, config))
                 if let processIdWithThrowableError {
                     throw processIdWithThrowableError
                 }
                 try processIdWithClosure?(id, config)
             }
-            var processIdPriorityTimeoutCallsCount = 0
+            private var __spyable_processIdPriorityTimeoutCallsCount: Int = 0
+            var processIdPriorityTimeoutCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "processIdPriorityTimeout")
+                    return __spyable_processIdPriorityTimeoutCallsCount
+                }
+                set {
+                    __spyable_processIdPriorityTimeoutCallsCount = newValue
+                }
+            }
             var processIdPriorityTimeoutCalled: Bool {
                 return processIdPriorityTimeoutCallsCount > 0
             }
-            var processIdPriorityTimeoutReceivedArguments: (id: Int, priority: Int, timeout: Double)?
-            var processIdPriorityTimeoutReceivedInvocations: [(id: Int, priority: Int, timeout: Double)] = []
+            private var __spyable_processIdPriorityTimeoutReceivedArguments: (id: Int, priority: Int, timeout: Double)?
+            var processIdPriorityTimeoutReceivedArguments: (id: Int, priority: Int, timeout: Double)? {
+                get {
+                    __spyableLedger?.markVerified(self, "processIdPriorityTimeout")
+                    return __spyable_processIdPriorityTimeoutReceivedArguments
+                }
+                set {
+                    __spyable_processIdPriorityTimeoutReceivedArguments = newValue
+                }
+            }
+            private var __spyable_processIdPriorityTimeoutReceivedInvocations: [(id: Int, priority: Int, timeout: Double)] = []
+            var processIdPriorityTimeoutReceivedInvocations: [(id: Int, priority: Int, timeout: Double)] {
+                get {
+                    __spyableLedger?.markVerified(self, "processIdPriorityTimeout")
+                    return __spyable_processIdPriorityTimeoutReceivedInvocations
+                }
+                set {
+                    __spyable_processIdPriorityTimeoutReceivedInvocations = newValue
+                }
+            }
             var processIdPriorityTimeoutThrowableError: (any Error)?
             var processIdPriorityTimeoutClosure: ((Int, Int, Double) async throws -> Void)?
             func process(id: Int, priority: Int, timeout: Double) async throws {
-                processIdPriorityTimeoutCallsCount += 1
-                processIdPriorityTimeoutReceivedArguments = (id, priority, timeout)
-                processIdPriorityTimeoutReceivedInvocations.append((id, priority, timeout))
+                __spyableLedger?.record(self, "processIdPriorityTimeout", "AsyncThrowingPolymorphismProtocolSpy.process(id:priority:timeout:)")
+                __spyable_processIdPriorityTimeoutCallsCount += 1
+                __spyable_processIdPriorityTimeoutReceivedArguments = (id, priority, timeout)
+                __spyable_processIdPriorityTimeoutReceivedInvocations.append((id, priority, timeout))
                 if let processIdPriorityTimeoutThrowableError {
                     throw processIdPriorityTimeoutThrowableError
                 }
@@ -2962,69 +3918,210 @@ final class UT_SpyableMacro: XCTestCase {
         class InoutParametersProtocolSpy: InoutParametersProtocol, @unchecked Sendable {
             init() {
             }
-            var updateValueinoutIntCallsCount = 0
+            private let __spyableLedger: SpyableLedger? = SpyableLedger.current
+            private var __spyable_updateValueinoutIntCallsCount: Int = 0
+            var updateValueinoutIntCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "updateValueinoutInt")
+                    return __spyable_updateValueinoutIntCallsCount
+                }
+                set {
+                    __spyable_updateValueinoutIntCallsCount = newValue
+                }
+            }
             var updateValueinoutIntCalled: Bool {
                 return updateValueinoutIntCallsCount > 0
             }
-            var updateValueinoutIntReceivedValue: Int?
-            var updateValueinoutIntReceivedInvocations: [Int] = []
+            private var __spyable_updateValueinoutIntReceivedValue: Int?
+            var updateValueinoutIntReceivedValue: Int? {
+                get {
+                    __spyableLedger?.markVerified(self, "updateValueinoutInt")
+                    return __spyable_updateValueinoutIntReceivedValue
+                }
+                set {
+                    __spyable_updateValueinoutIntReceivedValue = newValue
+                }
+            }
+            private var __spyable_updateValueinoutIntReceivedInvocations: [Int] = []
+            var updateValueinoutIntReceivedInvocations: [Int] {
+                get {
+                    __spyableLedger?.markVerified(self, "updateValueinoutInt")
+                    return __spyable_updateValueinoutIntReceivedInvocations
+                }
+                set {
+                    __spyable_updateValueinoutIntReceivedInvocations = newValue
+                }
+            }
             var updateValueinoutIntClosure: ((inout Int) -> Void)?
             func update(value: inout Int) {
-                updateValueinoutIntCallsCount += 1
-                updateValueinoutIntReceivedValue = (value)
-                updateValueinoutIntReceivedInvocations.append((value))
+                __spyableLedger?.record(self, "updateValueinoutInt", "InoutParametersProtocolSpy.update(value:)")
+                __spyable_updateValueinoutIntCallsCount += 1
+                __spyable_updateValueinoutIntReceivedValue = (value)
+                __spyable_updateValueinoutIntReceivedInvocations.append((value))
                 updateValueinoutIntClosure?(&value)
             }
-            var updateValueIntCallsCount = 0
+            private var __spyable_updateValueIntCallsCount: Int = 0
+            var updateValueIntCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "updateValueInt")
+                    return __spyable_updateValueIntCallsCount
+                }
+                set {
+                    __spyable_updateValueIntCallsCount = newValue
+                }
+            }
             var updateValueIntCalled: Bool {
                 return updateValueIntCallsCount > 0
             }
-            var updateValueIntReceivedValue: Int?
-            var updateValueIntReceivedInvocations: [Int] = []
+            private var __spyable_updateValueIntReceivedValue: Int?
+            var updateValueIntReceivedValue: Int? {
+                get {
+                    __spyableLedger?.markVerified(self, "updateValueInt")
+                    return __spyable_updateValueIntReceivedValue
+                }
+                set {
+                    __spyable_updateValueIntReceivedValue = newValue
+                }
+            }
+            private var __spyable_updateValueIntReceivedInvocations: [Int] = []
+            var updateValueIntReceivedInvocations: [Int] {
+                get {
+                    __spyableLedger?.markVerified(self, "updateValueInt")
+                    return __spyable_updateValueIntReceivedInvocations
+                }
+                set {
+                    __spyable_updateValueIntReceivedInvocations = newValue
+                }
+            }
             var updateValueIntClosure: ((Int) -> Void)?
             func update(value: Int) {
-                updateValueIntCallsCount += 1
-                updateValueIntReceivedValue = (value)
-                updateValueIntReceivedInvocations.append((value))
+                __spyableLedger?.record(self, "updateValueInt", "InoutParametersProtocolSpy.update(value:)")
+                __spyable_updateValueIntCallsCount += 1
+                __spyable_updateValueIntReceivedValue = (value)
+                __spyable_updateValueIntReceivedInvocations.append((value))
                 updateValueIntClosure?(value)
             }
-            var updateValueinoutStringCallsCount = 0
+            private var __spyable_updateValueinoutStringCallsCount: Int = 0
+            var updateValueinoutStringCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "updateValueinoutString")
+                    return __spyable_updateValueinoutStringCallsCount
+                }
+                set {
+                    __spyable_updateValueinoutStringCallsCount = newValue
+                }
+            }
             var updateValueinoutStringCalled: Bool {
                 return updateValueinoutStringCallsCount > 0
             }
-            var updateValueinoutStringReceivedValue: String?
-            var updateValueinoutStringReceivedInvocations: [String] = []
+            private var __spyable_updateValueinoutStringReceivedValue: String?
+            var updateValueinoutStringReceivedValue: String? {
+                get {
+                    __spyableLedger?.markVerified(self, "updateValueinoutString")
+                    return __spyable_updateValueinoutStringReceivedValue
+                }
+                set {
+                    __spyable_updateValueinoutStringReceivedValue = newValue
+                }
+            }
+            private var __spyable_updateValueinoutStringReceivedInvocations: [String] = []
+            var updateValueinoutStringReceivedInvocations: [String] {
+                get {
+                    __spyableLedger?.markVerified(self, "updateValueinoutString")
+                    return __spyable_updateValueinoutStringReceivedInvocations
+                }
+                set {
+                    __spyable_updateValueinoutStringReceivedInvocations = newValue
+                }
+            }
             var updateValueinoutStringClosure: ((inout String) -> Void)?
             func update(value: inout String) {
-                updateValueinoutStringCallsCount += 1
-                updateValueinoutStringReceivedValue = (value)
-                updateValueinoutStringReceivedInvocations.append((value))
+                __spyableLedger?.record(self, "updateValueinoutString", "InoutParametersProtocolSpy.update(value:)")
+                __spyable_updateValueinoutStringCallsCount += 1
+                __spyable_updateValueinoutStringReceivedValue = (value)
+                __spyable_updateValueinoutStringReceivedInvocations.append((value))
                 updateValueinoutStringClosure?(&value)
             }
-            var updateValueinoutIntFlagBoolCallsCount = 0
+            private var __spyable_updateValueinoutIntFlagBoolCallsCount: Int = 0
+            var updateValueinoutIntFlagBoolCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "updateValueinoutIntFlagBool")
+                    return __spyable_updateValueinoutIntFlagBoolCallsCount
+                }
+                set {
+                    __spyable_updateValueinoutIntFlagBoolCallsCount = newValue
+                }
+            }
             var updateValueinoutIntFlagBoolCalled: Bool {
                 return updateValueinoutIntFlagBoolCallsCount > 0
             }
-            var updateValueinoutIntFlagBoolReceivedArguments: (value: Int, flag: Bool)?
-            var updateValueinoutIntFlagBoolReceivedInvocations: [(value: Int, flag: Bool)] = []
+            private var __spyable_updateValueinoutIntFlagBoolReceivedArguments: (value: Int, flag: Bool)?
+            var updateValueinoutIntFlagBoolReceivedArguments: (value: Int, flag: Bool)? {
+                get {
+                    __spyableLedger?.markVerified(self, "updateValueinoutIntFlagBool")
+                    return __spyable_updateValueinoutIntFlagBoolReceivedArguments
+                }
+                set {
+                    __spyable_updateValueinoutIntFlagBoolReceivedArguments = newValue
+                }
+            }
+            private var __spyable_updateValueinoutIntFlagBoolReceivedInvocations: [(value: Int, flag: Bool)] = []
+            var updateValueinoutIntFlagBoolReceivedInvocations: [(value: Int, flag: Bool)] {
+                get {
+                    __spyableLedger?.markVerified(self, "updateValueinoutIntFlagBool")
+                    return __spyable_updateValueinoutIntFlagBoolReceivedInvocations
+                }
+                set {
+                    __spyable_updateValueinoutIntFlagBoolReceivedInvocations = newValue
+                }
+            }
             var updateValueinoutIntFlagBoolClosure: ((inout Int, Bool) -> Void)?
             func update(value: inout Int, flag: Bool) {
-                updateValueinoutIntFlagBoolCallsCount += 1
-                updateValueinoutIntFlagBoolReceivedArguments = (value, flag)
-                updateValueinoutIntFlagBoolReceivedInvocations.append((value, flag))
+                __spyableLedger?.record(self, "updateValueinoutIntFlagBool", "InoutParametersProtocolSpy.update(value:flag:)")
+                __spyable_updateValueinoutIntFlagBoolCallsCount += 1
+                __spyable_updateValueinoutIntFlagBoolReceivedArguments = (value, flag)
+                __spyable_updateValueinoutIntFlagBoolReceivedInvocations.append((value, flag))
                 updateValueinoutIntFlagBoolClosure?(&value, flag)
             }
-            var updateValueIntFlagBoolCallsCount = 0
+            private var __spyable_updateValueIntFlagBoolCallsCount: Int = 0
+            var updateValueIntFlagBoolCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "updateValueIntFlagBool")
+                    return __spyable_updateValueIntFlagBoolCallsCount
+                }
+                set {
+                    __spyable_updateValueIntFlagBoolCallsCount = newValue
+                }
+            }
             var updateValueIntFlagBoolCalled: Bool {
                 return updateValueIntFlagBoolCallsCount > 0
             }
-            var updateValueIntFlagBoolReceivedArguments: (value: Int, flag: Bool)?
-            var updateValueIntFlagBoolReceivedInvocations: [(value: Int, flag: Bool)] = []
+            private var __spyable_updateValueIntFlagBoolReceivedArguments: (value: Int, flag: Bool)?
+            var updateValueIntFlagBoolReceivedArguments: (value: Int, flag: Bool)? {
+                get {
+                    __spyableLedger?.markVerified(self, "updateValueIntFlagBool")
+                    return __spyable_updateValueIntFlagBoolReceivedArguments
+                }
+                set {
+                    __spyable_updateValueIntFlagBoolReceivedArguments = newValue
+                }
+            }
+            private var __spyable_updateValueIntFlagBoolReceivedInvocations: [(value: Int, flag: Bool)] = []
+            var updateValueIntFlagBoolReceivedInvocations: [(value: Int, flag: Bool)] {
+                get {
+                    __spyableLedger?.markVerified(self, "updateValueIntFlagBool")
+                    return __spyable_updateValueIntFlagBoolReceivedInvocations
+                }
+                set {
+                    __spyable_updateValueIntFlagBoolReceivedInvocations = newValue
+                }
+            }
             var updateValueIntFlagBoolClosure: ((Int, Bool) -> Void)?
             func update(value: Int, flag: Bool) {
-                updateValueIntFlagBoolCallsCount += 1
-                updateValueIntFlagBoolReceivedArguments = (value, flag)
-                updateValueIntFlagBoolReceivedInvocations.append((value, flag))
+                __spyableLedger?.record(self, "updateValueIntFlagBool", "InoutParametersProtocolSpy.update(value:flag:)")
+                __spyable_updateValueIntFlagBoolCallsCount += 1
+                __spyable_updateValueIntFlagBoolReceivedArguments = (value, flag)
+                __spyable_updateValueIntFlagBoolReceivedInvocations.append((value, flag))
                 updateValueIntFlagBoolClosure?(value, flag)
             }
             var processDatainoutDataBoolCallsCount = 0
@@ -3081,43 +4178,127 @@ final class UT_SpyableMacro: XCTestCase {
                     return processDatainoutDataStringReturnValue
                 }
             }
-            var swapFirstinoutIntSecondinoutIntCallsCount = 0
+            private var __spyable_swapFirstinoutIntSecondinoutIntCallsCount: Int = 0
+            var swapFirstinoutIntSecondinoutIntCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "swapFirstinoutIntSecondinoutInt")
+                    return __spyable_swapFirstinoutIntSecondinoutIntCallsCount
+                }
+                set {
+                    __spyable_swapFirstinoutIntSecondinoutIntCallsCount = newValue
+                }
+            }
             var swapFirstinoutIntSecondinoutIntCalled: Bool {
                 return swapFirstinoutIntSecondinoutIntCallsCount > 0
             }
-            var swapFirstinoutIntSecondinoutIntReceivedArguments: (first: Int, second: Int)?
-            var swapFirstinoutIntSecondinoutIntReceivedInvocations: [(first: Int, second: Int)] = []
+            private var __spyable_swapFirstinoutIntSecondinoutIntReceivedArguments: (first: Int, second: Int)?
+            var swapFirstinoutIntSecondinoutIntReceivedArguments: (first: Int, second: Int)? {
+                get {
+                    __spyableLedger?.markVerified(self, "swapFirstinoutIntSecondinoutInt")
+                    return __spyable_swapFirstinoutIntSecondinoutIntReceivedArguments
+                }
+                set {
+                    __spyable_swapFirstinoutIntSecondinoutIntReceivedArguments = newValue
+                }
+            }
+            private var __spyable_swapFirstinoutIntSecondinoutIntReceivedInvocations: [(first: Int, second: Int)] = []
+            var swapFirstinoutIntSecondinoutIntReceivedInvocations: [(first: Int, second: Int)] {
+                get {
+                    __spyableLedger?.markVerified(self, "swapFirstinoutIntSecondinoutInt")
+                    return __spyable_swapFirstinoutIntSecondinoutIntReceivedInvocations
+                }
+                set {
+                    __spyable_swapFirstinoutIntSecondinoutIntReceivedInvocations = newValue
+                }
+            }
             var swapFirstinoutIntSecondinoutIntClosure: ((inout Int, inout Int) -> Void)?
             func swap(first: inout Int, second: inout Int) {
-                swapFirstinoutIntSecondinoutIntCallsCount += 1
-                swapFirstinoutIntSecondinoutIntReceivedArguments = (first, second)
-                swapFirstinoutIntSecondinoutIntReceivedInvocations.append((first, second))
+                __spyableLedger?.record(self, "swapFirstinoutIntSecondinoutInt", "InoutParametersProtocolSpy.swap(first:second:)")
+                __spyable_swapFirstinoutIntSecondinoutIntCallsCount += 1
+                __spyable_swapFirstinoutIntSecondinoutIntReceivedArguments = (first, second)
+                __spyable_swapFirstinoutIntSecondinoutIntReceivedInvocations.append((first, second))
                 swapFirstinoutIntSecondinoutIntClosure?(&first, &second)
             }
-            var swapFirstinoutStringSecondinoutStringCallsCount = 0
+            private var __spyable_swapFirstinoutStringSecondinoutStringCallsCount: Int = 0
+            var swapFirstinoutStringSecondinoutStringCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "swapFirstinoutStringSecondinoutString")
+                    return __spyable_swapFirstinoutStringSecondinoutStringCallsCount
+                }
+                set {
+                    __spyable_swapFirstinoutStringSecondinoutStringCallsCount = newValue
+                }
+            }
             var swapFirstinoutStringSecondinoutStringCalled: Bool {
                 return swapFirstinoutStringSecondinoutStringCallsCount > 0
             }
-            var swapFirstinoutStringSecondinoutStringReceivedArguments: (first: String, second: String)?
-            var swapFirstinoutStringSecondinoutStringReceivedInvocations: [(first: String, second: String)] = []
+            private var __spyable_swapFirstinoutStringSecondinoutStringReceivedArguments: (first: String, second: String)?
+            var swapFirstinoutStringSecondinoutStringReceivedArguments: (first: String, second: String)? {
+                get {
+                    __spyableLedger?.markVerified(self, "swapFirstinoutStringSecondinoutString")
+                    return __spyable_swapFirstinoutStringSecondinoutStringReceivedArguments
+                }
+                set {
+                    __spyable_swapFirstinoutStringSecondinoutStringReceivedArguments = newValue
+                }
+            }
+            private var __spyable_swapFirstinoutStringSecondinoutStringReceivedInvocations: [(first: String, second: String)] = []
+            var swapFirstinoutStringSecondinoutStringReceivedInvocations: [(first: String, second: String)] {
+                get {
+                    __spyableLedger?.markVerified(self, "swapFirstinoutStringSecondinoutString")
+                    return __spyable_swapFirstinoutStringSecondinoutStringReceivedInvocations
+                }
+                set {
+                    __spyable_swapFirstinoutStringSecondinoutStringReceivedInvocations = newValue
+                }
+            }
             var swapFirstinoutStringSecondinoutStringClosure: ((inout String, inout String) -> Void)?
             func swap(first: inout String, second: inout String) {
-                swapFirstinoutStringSecondinoutStringCallsCount += 1
-                swapFirstinoutStringSecondinoutStringReceivedArguments = (first, second)
-                swapFirstinoutStringSecondinoutStringReceivedInvocations.append((first, second))
+                __spyableLedger?.record(self, "swapFirstinoutStringSecondinoutString", "InoutParametersProtocolSpy.swap(first:second:)")
+                __spyable_swapFirstinoutStringSecondinoutStringCallsCount += 1
+                __spyable_swapFirstinoutStringSecondinoutStringReceivedArguments = (first, second)
+                __spyable_swapFirstinoutStringSecondinoutStringReceivedInvocations.append((first, second))
                 swapFirstinoutStringSecondinoutStringClosure?(&first, &second)
             }
-            var swapFirstSecondThirdCallsCount = 0
+            private var __spyable_swapFirstSecondThirdCallsCount: Int = 0
+            var swapFirstSecondThirdCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "swapFirstSecondThird")
+                    return __spyable_swapFirstSecondThirdCallsCount
+                }
+                set {
+                    __spyable_swapFirstSecondThirdCallsCount = newValue
+                }
+            }
             var swapFirstSecondThirdCalled: Bool {
                 return swapFirstSecondThirdCallsCount > 0
             }
-            var swapFirstSecondThirdReceivedArguments: (first: Int, second: Int, third: Int)?
-            var swapFirstSecondThirdReceivedInvocations: [(first: Int, second: Int, third: Int)] = []
+            private var __spyable_swapFirstSecondThirdReceivedArguments: (first: Int, second: Int, third: Int)?
+            var swapFirstSecondThirdReceivedArguments: (first: Int, second: Int, third: Int)? {
+                get {
+                    __spyableLedger?.markVerified(self, "swapFirstSecondThird")
+                    return __spyable_swapFirstSecondThirdReceivedArguments
+                }
+                set {
+                    __spyable_swapFirstSecondThirdReceivedArguments = newValue
+                }
+            }
+            private var __spyable_swapFirstSecondThirdReceivedInvocations: [(first: Int, second: Int, third: Int)] = []
+            var swapFirstSecondThirdReceivedInvocations: [(first: Int, second: Int, third: Int)] {
+                get {
+                    __spyableLedger?.markVerified(self, "swapFirstSecondThird")
+                    return __spyable_swapFirstSecondThirdReceivedInvocations
+                }
+                set {
+                    __spyable_swapFirstSecondThirdReceivedInvocations = newValue
+                }
+            }
             var swapFirstSecondThirdClosure: ((inout Int, inout Int, inout Int) -> Void)?
             func swap(first: inout Int, second: inout Int, third: inout Int) {
-                swapFirstSecondThirdCallsCount += 1
-                swapFirstSecondThirdReceivedArguments = (first, second, third)
-                swapFirstSecondThirdReceivedInvocations.append((first, second, third))
+                __spyableLedger?.record(self, "swapFirstSecondThird", "InoutParametersProtocolSpy.swap(first:second:third:)")
+                __spyable_swapFirstSecondThirdCallsCount += 1
+                __spyable_swapFirstSecondThirdReceivedArguments = (first, second, third)
+                __spyable_swapFirstSecondThirdReceivedInvocations.append((first, second, third))
                 swapFirstSecondThirdClosure?(&first, &second, &third)
             }
             var transformInputinoutStringOptionsDictionaryStringAnyIntCallsCount = 0
@@ -3192,35 +4373,91 @@ final class UT_SpyableMacro: XCTestCase {
                     return transformInputinoutStringOptionsinoutDictionaryStringAnyStringReturnValue
                 }
             }
-            var configureSettingsinoutDictionaryStringAnyCallsCount = 0
+            private var __spyable_configureSettingsinoutDictionaryStringAnyCallsCount: Int = 0
+            var configureSettingsinoutDictionaryStringAnyCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "configureSettingsinoutDictionaryStringAny")
+                    return __spyable_configureSettingsinoutDictionaryStringAnyCallsCount
+                }
+                set {
+                    __spyable_configureSettingsinoutDictionaryStringAnyCallsCount = newValue
+                }
+            }
             var configureSettingsinoutDictionaryStringAnyCalled: Bool {
                 return configureSettingsinoutDictionaryStringAnyCallsCount > 0
             }
-            var configureSettingsinoutDictionaryStringAnyReceivedSettings: [String: Any]?
-            var configureSettingsinoutDictionaryStringAnyReceivedInvocations: [[String: Any]] = []
+            private var __spyable_configureSettingsinoutDictionaryStringAnyReceivedSettings: [String: Any]?
+            var configureSettingsinoutDictionaryStringAnyReceivedSettings: [String: Any]? {
+                get {
+                    __spyableLedger?.markVerified(self, "configureSettingsinoutDictionaryStringAny")
+                    return __spyable_configureSettingsinoutDictionaryStringAnyReceivedSettings
+                }
+                set {
+                    __spyable_configureSettingsinoutDictionaryStringAnyReceivedSettings = newValue
+                }
+            }
+            private var __spyable_configureSettingsinoutDictionaryStringAnyReceivedInvocations: [[String: Any]] = []
+            var configureSettingsinoutDictionaryStringAnyReceivedInvocations: [[String: Any]] {
+                get {
+                    __spyableLedger?.markVerified(self, "configureSettingsinoutDictionaryStringAny")
+                    return __spyable_configureSettingsinoutDictionaryStringAnyReceivedInvocations
+                }
+                set {
+                    __spyable_configureSettingsinoutDictionaryStringAnyReceivedInvocations = newValue
+                }
+            }
             var configureSettingsinoutDictionaryStringAnyThrowableError: (any Error)?
             var configureSettingsinoutDictionaryStringAnyClosure: ((inout [String: Any]) async throws -> Void)?
             func configure(settings: inout [String: Any]) async throws {
-                configureSettingsinoutDictionaryStringAnyCallsCount += 1
-                configureSettingsinoutDictionaryStringAnyReceivedSettings = (settings)
-                configureSettingsinoutDictionaryStringAnyReceivedInvocations.append((settings))
+                __spyableLedger?.record(self, "configureSettingsinoutDictionaryStringAny", "InoutParametersProtocolSpy.configure(settings:)")
+                __spyable_configureSettingsinoutDictionaryStringAnyCallsCount += 1
+                __spyable_configureSettingsinoutDictionaryStringAnyReceivedSettings = (settings)
+                __spyable_configureSettingsinoutDictionaryStringAnyReceivedInvocations.append((settings))
                 if let configureSettingsinoutDictionaryStringAnyThrowableError {
                     throw configureSettingsinoutDictionaryStringAnyThrowableError
                 }
                 try await configureSettingsinoutDictionaryStringAnyClosure?(&settings)
             }
-            var configureSettingsDictionaryStringAnyCallsCount = 0
+            private var __spyable_configureSettingsDictionaryStringAnyCallsCount: Int = 0
+            var configureSettingsDictionaryStringAnyCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "configureSettingsDictionaryStringAny")
+                    return __spyable_configureSettingsDictionaryStringAnyCallsCount
+                }
+                set {
+                    __spyable_configureSettingsDictionaryStringAnyCallsCount = newValue
+                }
+            }
             var configureSettingsDictionaryStringAnyCalled: Bool {
                 return configureSettingsDictionaryStringAnyCallsCount > 0
             }
-            var configureSettingsDictionaryStringAnyReceivedSettings: [String: Any]?
-            var configureSettingsDictionaryStringAnyReceivedInvocations: [[String: Any]] = []
+            private var __spyable_configureSettingsDictionaryStringAnyReceivedSettings: [String: Any]?
+            var configureSettingsDictionaryStringAnyReceivedSettings: [String: Any]? {
+                get {
+                    __spyableLedger?.markVerified(self, "configureSettingsDictionaryStringAny")
+                    return __spyable_configureSettingsDictionaryStringAnyReceivedSettings
+                }
+                set {
+                    __spyable_configureSettingsDictionaryStringAnyReceivedSettings = newValue
+                }
+            }
+            private var __spyable_configureSettingsDictionaryStringAnyReceivedInvocations: [[String: Any]] = []
+            var configureSettingsDictionaryStringAnyReceivedInvocations: [[String: Any]] {
+                get {
+                    __spyableLedger?.markVerified(self, "configureSettingsDictionaryStringAny")
+                    return __spyable_configureSettingsDictionaryStringAnyReceivedInvocations
+                }
+                set {
+                    __spyable_configureSettingsDictionaryStringAnyReceivedInvocations = newValue
+                }
+            }
             var configureSettingsDictionaryStringAnyThrowableError: (any Error)?
             var configureSettingsDictionaryStringAnyClosure: (([String: Any]) async throws -> Void)?
             func configure(settings: [String: Any]) async throws {
-                configureSettingsDictionaryStringAnyCallsCount += 1
-                configureSettingsDictionaryStringAnyReceivedSettings = (settings)
-                configureSettingsDictionaryStringAnyReceivedInvocations.append((settings))
+                __spyableLedger?.record(self, "configureSettingsDictionaryStringAny", "InoutParametersProtocolSpy.configure(settings:)")
+                __spyable_configureSettingsDictionaryStringAnyCallsCount += 1
+                __spyable_configureSettingsDictionaryStringAnyReceivedSettings = (settings)
+                __spyable_configureSettingsDictionaryStringAnyReceivedInvocations.append((settings))
                 if let configureSettingsDictionaryStringAnyThrowableError {
                     throw configureSettingsDictionaryStringAnyThrowableError
                 }

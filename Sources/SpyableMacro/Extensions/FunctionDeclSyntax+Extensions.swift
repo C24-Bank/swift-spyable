@@ -19,4 +19,14 @@ extension FunctionDeclSyntax {
     }
     return returnType.trimmed
   }
+
+  /// Whether the function is a *command*: it returns nothing — no return clause, `-> Void` or
+  /// `-> ()` — as opposed to a query that returns a value.
+  var isCommand: Bool {
+    guard let returnType = signature.returnClause?.type else { return true }
+    if let tupleType = returnType.as(TupleTypeSyntax.self) {
+      return tupleType.elements.isEmpty
+    }
+    return returnType.as(IdentifierTypeSyntax.self)?.name.text == "Void"
+  }
 }

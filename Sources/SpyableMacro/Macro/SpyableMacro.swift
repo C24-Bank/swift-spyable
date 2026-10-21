@@ -32,6 +32,10 @@ public enum SpyableMacro: PeerMacro {
       spyClassDeclaration = ThreadSafetyRewriter().rewrite(spyClassDeclaration)
     }
 
+    // Report command calls to the test's `SpyableLedger`, if one is installed, and mark them
+    // verified when the spy's recorded calls are read back.
+    spyClassDeclaration = LedgerRewriter().rewrite(spyClassDeclaration)
+
     // Handle preprocessor flag
     if let preprocessorFlag = extractor.extractPreprocessorFlag(from: node, in: context) {
       return [wrapInIfConfig(spyClassDeclaration, withFlag: preprocessorFlag)]
