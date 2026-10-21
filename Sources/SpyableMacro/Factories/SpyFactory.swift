@@ -227,22 +227,15 @@ final class PolymorphismDetector {
   }
 
   func getVariablePrefix(for function: FunctionDeclSyntax) -> String {
-    // Early exit optimization: if only one function, no polymorphism possible
-    guard functions.count > 1 else {
-      return prefixFactory.text(for: function)
-    }
+    prefixFactory.text(for: function, descriptive: isPolymorphic(function))
+  }
 
-    // Compute base prefix
-    let basePrefix = prefixFactory.text(for: function)
-
-    // Check if descriptive prefix needed - this triggers lazy evaluation
-    let shouldBeDescriptive = (prefixCounts[basePrefix] ?? 0) > 1
-
-    if shouldBeDescriptive {
-      return prefixFactory.text(for: function, descriptive: true)
-    } else {
-      return basePrefix
-    }
+  /// Whether `function` shares its plain prefix with another function, so its variables are named
+  /// with the descriptive prefix.
+  func isPolymorphic(_ function: FunctionDeclSyntax) -> Bool {
+    // Early exit optimization: with one function, no polymorphism is possible, and the lazy
+    // prefix counts are never computed.
+    functions.count > 1 && (prefixCounts[prefixFactory.text(for: function)] ?? 0) > 1
   }
 }
 

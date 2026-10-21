@@ -273,6 +273,7 @@ final class UT_LedgerRewriter: XCTestCase {
     )
   }
 
+  /// Overloads get descriptive prefixes, and descriptions naming their parameter types.
   func testOverloadedMethodsUseDescriptivePrefixes() {
     assertLedgerExpansion(
       of: """
@@ -321,7 +322,7 @@ final class UT_LedgerRewriter: XCTestCase {
             }
             var displayTextIntClosure: ((Int) -> Void)?
             func display(text: Int) {
-                __spyableLedger?.record(self, "displayTextInt", "DisplayingSpy.display(text:)")
+                __spyableLedger?.record(self, "displayTextInt", "DisplayingSpy.display(text: Int)")
                 __spyable_displayTextIntCallsCount += 1
                 __spyable_displayTextIntReceivedText = (text)
                 __spyable_displayTextIntReceivedInvocations.append((text))
@@ -362,7 +363,7 @@ final class UT_LedgerRewriter: XCTestCase {
             }
             var displayTextStringClosure: ((String) -> Void)?
             func display(text: String) {
-                __spyableLedger?.record(self, "displayTextString", "DisplayingSpy.display(text:)")
+                __spyableLedger?.record(self, "displayTextString", "DisplayingSpy.display(text: String)")
                 __spyable_displayTextStringCallsCount += 1
                 __spyable_displayTextStringReceivedText = (text)
                 __spyable_displayTextStringReceivedInvocations.append((text))

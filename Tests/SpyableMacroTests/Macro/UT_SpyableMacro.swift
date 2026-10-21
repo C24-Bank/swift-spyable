@@ -1443,7 +1443,7 @@ final class UT_SpyableMacro: XCTestCase {
             }
             var computeValueIntClosure: ((Int) -> Void)?
             func compute(value: Int) {
-                __spyableLedger?.record(self, "computeValueInt", "OverloadedParameterTypesProtocolSpy.compute(value:)")
+                __spyableLedger?.record(self, "computeValueInt", "OverloadedParameterTypesProtocolSpy.compute(value: Int)")
                 __spyable_computeValueIntCallsCount += 1
                 __spyable_computeValueIntReceivedValue = (value)
                 __spyable_computeValueIntReceivedInvocations.append((value))
@@ -1484,7 +1484,7 @@ final class UT_SpyableMacro: XCTestCase {
             }
             var computeForStringClosure: ((String) -> Void)?
             func compute(for id: String) {
-                __spyableLedger?.record(self, "computeForString", "OverloadedParameterTypesProtocolSpy.compute(for:)")
+                __spyableLedger?.record(self, "computeForString", "OverloadedParameterTypesProtocolSpy.compute(for: String)")
                 __spyable_computeForStringCallsCount += 1
                 __spyable_computeForStringReceivedId = (id)
                 __spyable_computeForStringReceivedInvocations.append((id))
@@ -2112,7 +2112,7 @@ final class UT_SpyableMacro: XCTestCase {
             }
             var processValueTClosure: ((Any) -> Void)?
             func process<T: Codable>(value: T) {
-                __spyableLedger?.record(self, "processValueT", "GenericConstraintsProtocolSpy.process(value:)")
+                __spyableLedger?.record(self, "processValueT", "GenericConstraintsProtocolSpy.process(value: T)")
                 __spyable_processValueTCallsCount += 1
                 __spyable_processValueTReceivedValue = (value)
                 __spyable_processValueTReceivedInvocations.append((value))
@@ -2189,7 +2189,7 @@ final class UT_SpyableMacro: XCTestCase {
             }
             var transformValueTClosure: ((Any) -> Void)?
             func transform<T: Codable & Hashable>(value: T) {
-                __spyableLedger?.record(self, "transformValueT", "GenericConstraintsProtocolSpy.transform(value:)")
+                __spyableLedger?.record(self, "transformValueT", "GenericConstraintsProtocolSpy.transform(value: T)")
                 __spyable_transformValueTCallsCount += 1
                 __spyable_transformValueTReceivedValue = (value)
                 __spyable_transformValueTReceivedInvocations.append((value))
@@ -2266,7 +2266,7 @@ final class UT_SpyableMacro: XCTestCase {
             }
             var convertValueTClosure: ((Any) -> Void)?
             func convert<T>(value: T) where T: Equatable {
-                __spyableLedger?.record(self, "convertValueT", "GenericConstraintsProtocolSpy.convert(value:)")
+                __spyableLedger?.record(self, "convertValueT", "GenericConstraintsProtocolSpy.convert(value: T)")
                 __spyable_convertValueTCallsCount += 1
                 __spyable_convertValueTReceivedValue = (value)
                 __spyable_convertValueTReceivedInvocations.append((value))
@@ -2343,7 +2343,7 @@ final class UT_SpyableMacro: XCTestCase {
             }
             var convertValueTOtherUClosure: ((Any, Any) -> Void)?
             func convert<T, U>(value: T, other: U) where T: Equatable, U: Hashable {
-                __spyableLedger?.record(self, "convertValueTOtherU", "GenericConstraintsProtocolSpy.convert(value:other:)")
+                __spyableLedger?.record(self, "convertValueTOtherU", "GenericConstraintsProtocolSpy.convert(value: T, other: U)")
                 __spyable_convertValueTOtherUCallsCount += 1
                 __spyable_convertValueTOtherUReceivedArguments = (value, other)
                 __spyable_convertValueTOtherUReceivedInvocations.append((value, other))
@@ -2440,7 +2440,7 @@ final class UT_SpyableMacro: XCTestCase {
             }
             var handleValueCodableSendableClosure: ((Codable & Sendable) -> Void)?
             func handle(value: Codable & Sendable) {
-                __spyableLedger?.record(self, "handleValueCodableSendable", "ProtocolCompositionsProtocolSpy.handle(value:)")
+                __spyableLedger?.record(self, "handleValueCodableSendable", "ProtocolCompositionsProtocolSpy.handle(value: Codable & Sendable)")
                 __spyable_handleValueCodableSendableCallsCount += 1
                 __spyable_handleValueCodableSendableReceivedValue = (value)
                 __spyable_handleValueCodableSendableReceivedInvocations.append((value))
@@ -2517,7 +2517,7 @@ final class UT_SpyableMacro: XCTestCase {
             }
             var handleValueCodableHashableSendableClosure: ((Codable & Hashable & Sendable) -> Void)?
             func handle(value: Codable & Hashable & Sendable) {
-                __spyableLedger?.record(self, "handleValueCodableHashableSendable", "ProtocolCompositionsProtocolSpy.handle(value:)")
+                __spyableLedger?.record(self, "handleValueCodableHashableSendable", "ProtocolCompositionsProtocolSpy.handle(value: Codable & Hashable & Sendable)")
                 __spyable_handleValueCodableHashableSendableCallsCount += 1
                 __spyable_handleValueCodableHashableSendableReceivedValue = (value)
                 __spyable_handleValueCodableHashableSendableReceivedInvocations.append((value))
@@ -2620,7 +2620,7 @@ final class UT_SpyableMacro: XCTestCase {
             }
             var processItemanyCodableSendableHandleranyCodableSendableVoidClosure: ((any Codable & Sendable, (any Codable & Sendable) -> Void) -> Void)?
             func process(item: any Codable & Sendable, handler: (any Codable & Sendable) -> Void) {
-                __spyableLedger?.record(self, "processItemanyCodableSendableHandleranyCodableSendableVoid", "ProtocolCompositionsProtocolSpy.process(item:handler:)")
+                __spyableLedger?.record(self, "processItemanyCodableSendableHandleranyCodableSendableVoid", "ProtocolCompositionsProtocolSpy.process(item: any Codable & Sendable, handler: (any Codable & Sendable) -> Void)")
                 __spyable_processItemanyCodableSendableHandleranyCodableSendableVoidCallsCount += 1
                 processItemanyCodableSendableHandleranyCodableSendableVoidClosure?(item, handler)
             }
@@ -2639,7 +2639,7 @@ final class UT_SpyableMacro: XCTestCase {
             }
             var processItemanyCodableSendableHandleranyCodableSendableStringClosure: ((any Codable & Sendable, (any Codable & Sendable) -> String) -> Void)?
             func process(item: any Codable & Sendable, handler: (any Codable & Sendable) -> String) {
-                __spyableLedger?.record(self, "processItemanyCodableSendableHandleranyCodableSendableString", "ProtocolCompositionsProtocolSpy.process(item:handler:)")
+                __spyableLedger?.record(self, "processItemanyCodableSendableHandleranyCodableSendableString", "ProtocolCompositionsProtocolSpy.process(item: any Codable & Sendable, handler: (any Codable & Sendable) -> String)")
                 __spyable_processItemanyCodableSendableHandleranyCodableSendableStringCallsCount += 1
                 processItemanyCodableSendableHandleranyCodableSendableStringClosure?(item, handler)
             }
@@ -2722,7 +2722,7 @@ final class UT_SpyableMacro: XCTestCase {
             var processItemItemClosure: ((Item) -> Void)?
 
             func process(item: Item) {
-                __spyableLedger?.record(self, "processItemItem", "AssociatedTypesProtocolSpy.process(item:)")
+                __spyableLedger?.record(self, "processItemItem", "AssociatedTypesProtocolSpy.process(item: Item)")
                 __spyable_processItemItemCallsCount += 1
                 __spyable_processItemItemReceivedItem = (item)
                 __spyable_processItemItemReceivedInvocations.append((item))
@@ -2799,7 +2799,7 @@ final class UT_SpyableMacro: XCTestCase {
             }
             var processItemsArrayItemClosure: (([Item]) -> Void)?
             func process(items: [Item]) {
-                __spyableLedger?.record(self, "processItemsArrayItem", "AssociatedTypesProtocolSpy.process(items:)")
+                __spyableLedger?.record(self, "processItemsArrayItem", "AssociatedTypesProtocolSpy.process(items: [Item])")
                 __spyable_processItemsArrayItemCallsCount += 1
                 __spyable_processItemsArrayItemReceivedItems = (items)
                 __spyable_processItemsArrayItemReceivedInvocations.append((items))
@@ -2858,7 +2858,7 @@ final class UT_SpyableMacro: XCTestCase {
             }
             var transformContainerContainerClosure: ((Container) -> Void)?
             func transform(container: Container) {
-                __spyableLedger?.record(self, "transformContainerContainer", "AssociatedTypesProtocolSpy.transform(container:)")
+                __spyableLedger?.record(self, "transformContainerContainer", "AssociatedTypesProtocolSpy.transform(container: Container)")
                 __spyable_transformContainerContainerCallsCount += 1
                 __spyable_transformContainerContainerReceivedContainer = (container)
                 __spyable_transformContainerContainerReceivedInvocations.append((container))
@@ -2935,7 +2935,7 @@ final class UT_SpyableMacro: XCTestCase {
             }
             var handleItemSelfClosure: ((Self) -> Void)?
             func handle(item: Self) {
-                __spyableLedger?.record(self, "handleItemSelf", "AssociatedTypesProtocolSpy.handle(item:)")
+                __spyableLedger?.record(self, "handleItemSelf", "AssociatedTypesProtocolSpy.handle(item: Self)")
                 __spyable_handleItemSelfCallsCount += 1
                 __spyable_handleItemSelfReceivedItem = (item)
                 __spyable_handleItemSelfReceivedInvocations.append((item))
@@ -3075,7 +3075,7 @@ final class UT_SpyableMacro: XCTestCase {
             var processHandlerVoidClosure: ((() -> Void) -> Void)?
             // @escaping vs non-escaping closures
             func process(handler: () -> Void) {
-                __spyableLedger?.record(self, "processHandlerVoid", "FunctionAttributesProtocolSpy.process(handler:)")
+                __spyableLedger?.record(self, "processHandlerVoid", "FunctionAttributesProtocolSpy.process(handler: () -> Void)")
                 __spyable_processHandlerVoidCallsCount += 1
                 processHandlerVoidClosure?(handler)
             }
@@ -3114,7 +3114,7 @@ final class UT_SpyableMacro: XCTestCase {
             }
             var processHandlerescapingVoidClosure: ((@escaping () -> Void) -> Void)?
             func process(handler: @escaping () -> Void) {
-                __spyableLedger?.record(self, "processHandlerescapingVoid", "FunctionAttributesProtocolSpy.process(handler:)")
+                __spyableLedger?.record(self, "processHandlerescapingVoid", "FunctionAttributesProtocolSpy.process(handler: @escaping () -> Void)")
                 __spyable_processHandlerescapingVoidCallsCount += 1
                 __spyable_processHandlerescapingVoidReceivedHandler = (handler)
                 __spyable_processHandlerescapingVoidReceivedInvocations.append((handler))
@@ -3155,7 +3155,7 @@ final class UT_SpyableMacro: XCTestCase {
 
             // @Sendable closures  
             func handle(action: () -> Void) {
-                __spyableLedger?.record(self, "handleActionVoid", "FunctionAttributesProtocolSpy.handle(action:)")
+                __spyableLedger?.record(self, "handleActionVoid", "FunctionAttributesProtocolSpy.handle(action: () -> Void)")
                 __spyable_handleActionVoidCallsCount += 1
                 handleActionVoidClosure?(action)
             }
@@ -3174,7 +3174,7 @@ final class UT_SpyableMacro: XCTestCase {
             }
             var handleActionSendableVoidClosure: ((@Sendable () -> Void) -> Void)?
             func handle(action: @Sendable () -> Void) {
-                __spyableLedger?.record(self, "handleActionSendableVoid", "FunctionAttributesProtocolSpy.handle(action:)")
+                __spyableLedger?.record(self, "handleActionSendableVoid", "FunctionAttributesProtocolSpy.handle(action: @Sendable () -> Void)")
                 __spyable_handleActionSendableVoidCallsCount += 1
                 handleActionSendableVoidClosure?(action)
             }
@@ -3215,7 +3215,7 @@ final class UT_SpyableMacro: XCTestCase {
 
             // @autoclosure parameters
             func evaluate(_ expression: String) {
-                __spyableLedger?.record(self, "evaluate", "FunctionAttributesProtocolSpy.evaluate(_:)")
+                __spyableLedger?.record(self, "evaluate", "FunctionAttributesProtocolSpy.evaluate(_: String)")
                 __spyable_evaluateCallsCount += 1
                 __spyable_evaluateReceivedExpression = (expression)
                 __spyable_evaluateReceivedInvocations.append((expression))
@@ -3236,7 +3236,7 @@ final class UT_SpyableMacro: XCTestCase {
             }
             var evaluateClosure: ((@autoclosure () -> String) -> Void)?
             func evaluate(_ expression: @autoclosure () -> String) {
-                __spyableLedger?.record(self, "evaluate", "FunctionAttributesProtocolSpy.evaluate(_:)")
+                __spyableLedger?.record(self, "evaluate", "FunctionAttributesProtocolSpy.evaluate(_: @autoclosure () -> String)")
                 __spyable_evaluateCallsCount += 1
                 evaluateClosure?(expression())
             }
@@ -3257,7 +3257,7 @@ final class UT_SpyableMacro: XCTestCase {
 
             // Mixed scenarios with closures and @escaping/@Sendable
             func transform(converter: (String) -> Int) {
-                __spyableLedger?.record(self, "transformConverterStringInt", "FunctionAttributesProtocolSpy.transform(converter:)")
+                __spyableLedger?.record(self, "transformConverterStringInt", "FunctionAttributesProtocolSpy.transform(converter: (String) -> Int)")
                 __spyable_transformConverterStringIntCallsCount += 1
                 transformConverterStringIntClosure?(converter)
             }
@@ -3296,7 +3296,7 @@ final class UT_SpyableMacro: XCTestCase {
             }
             var transformConverterescapingStringIntClosure: ((@escaping (String) -> Int) -> Void)?
             func transform(converter: @escaping (String) -> Int) {
-                __spyableLedger?.record(self, "transformConverterescapingStringInt", "FunctionAttributesProtocolSpy.transform(converter:)")
+                __spyableLedger?.record(self, "transformConverterescapingStringInt", "FunctionAttributesProtocolSpy.transform(converter: @escaping (String) -> Int)")
                 __spyable_transformConverterescapingStringIntCallsCount += 1
                 __spyable_transformConverterescapingStringIntReceivedConverter = (converter)
                 __spyable_transformConverterescapingStringIntReceivedInvocations.append((converter))
@@ -3317,7 +3317,7 @@ final class UT_SpyableMacro: XCTestCase {
             }
             var transformConverterSendableStringIntClosure: ((@Sendable (String) -> Int) -> Void)?
             func transform(converter: @Sendable (String) -> Int) {
-                __spyableLedger?.record(self, "transformConverterSendableStringInt", "FunctionAttributesProtocolSpy.transform(converter:)")
+                __spyableLedger?.record(self, "transformConverterSendableStringInt", "FunctionAttributesProtocolSpy.transform(converter: @Sendable (String) -> Int)")
                 __spyable_transformConverterSendableStringIntCallsCount += 1
                 transformConverterSendableStringIntClosure?(converter)
             }
@@ -3656,7 +3656,7 @@ final class UT_SpyableMacro: XCTestCase {
 
             // Functions with different parameter count and async/throwing combinations
             func process(id: Int) {
-                __spyableLedger?.record(self, "processIdInt", "AsyncThrowingPolymorphismProtocolSpy.process(id:)")
+                __spyableLedger?.record(self, "processIdInt", "AsyncThrowingPolymorphismProtocolSpy.process(id: Int)")
                 __spyable_processIdIntCallsCount += 1
                 __spyable_processIdIntReceivedId = (id)
                 __spyable_processIdIntReceivedInvocations.append((id))
@@ -3954,7 +3954,7 @@ final class UT_SpyableMacro: XCTestCase {
             }
             var updateValueinoutIntClosure: ((inout Int) -> Void)?
             func update(value: inout Int) {
-                __spyableLedger?.record(self, "updateValueinoutInt", "InoutParametersProtocolSpy.update(value:)")
+                __spyableLedger?.record(self, "updateValueinoutInt", "InoutParametersProtocolSpy.update(value: inout Int)")
                 __spyable_updateValueinoutIntCallsCount += 1
                 __spyable_updateValueinoutIntReceivedValue = (value)
                 __spyable_updateValueinoutIntReceivedInvocations.append((value))
@@ -3995,7 +3995,7 @@ final class UT_SpyableMacro: XCTestCase {
             }
             var updateValueIntClosure: ((Int) -> Void)?
             func update(value: Int) {
-                __spyableLedger?.record(self, "updateValueInt", "InoutParametersProtocolSpy.update(value:)")
+                __spyableLedger?.record(self, "updateValueInt", "InoutParametersProtocolSpy.update(value: Int)")
                 __spyable_updateValueIntCallsCount += 1
                 __spyable_updateValueIntReceivedValue = (value)
                 __spyable_updateValueIntReceivedInvocations.append((value))
@@ -4036,7 +4036,7 @@ final class UT_SpyableMacro: XCTestCase {
             }
             var updateValueinoutStringClosure: ((inout String) -> Void)?
             func update(value: inout String) {
-                __spyableLedger?.record(self, "updateValueinoutString", "InoutParametersProtocolSpy.update(value:)")
+                __spyableLedger?.record(self, "updateValueinoutString", "InoutParametersProtocolSpy.update(value: inout String)")
                 __spyable_updateValueinoutStringCallsCount += 1
                 __spyable_updateValueinoutStringReceivedValue = (value)
                 __spyable_updateValueinoutStringReceivedInvocations.append((value))
@@ -4077,7 +4077,7 @@ final class UT_SpyableMacro: XCTestCase {
             }
             var updateValueinoutIntFlagBoolClosure: ((inout Int, Bool) -> Void)?
             func update(value: inout Int, flag: Bool) {
-                __spyableLedger?.record(self, "updateValueinoutIntFlagBool", "InoutParametersProtocolSpy.update(value:flag:)")
+                __spyableLedger?.record(self, "updateValueinoutIntFlagBool", "InoutParametersProtocolSpy.update(value: inout Int, flag: Bool)")
                 __spyable_updateValueinoutIntFlagBoolCallsCount += 1
                 __spyable_updateValueinoutIntFlagBoolReceivedArguments = (value, flag)
                 __spyable_updateValueinoutIntFlagBoolReceivedInvocations.append((value, flag))
@@ -4118,7 +4118,7 @@ final class UT_SpyableMacro: XCTestCase {
             }
             var updateValueIntFlagBoolClosure: ((Int, Bool) -> Void)?
             func update(value: Int, flag: Bool) {
-                __spyableLedger?.record(self, "updateValueIntFlagBool", "InoutParametersProtocolSpy.update(value:flag:)")
+                __spyableLedger?.record(self, "updateValueIntFlagBool", "InoutParametersProtocolSpy.update(value: Int, flag: Bool)")
                 __spyable_updateValueIntFlagBoolCallsCount += 1
                 __spyable_updateValueIntFlagBoolReceivedArguments = (value, flag)
                 __spyable_updateValueIntFlagBoolReceivedInvocations.append((value, flag))
@@ -4213,7 +4213,7 @@ final class UT_SpyableMacro: XCTestCase {
             }
             var swapFirstinoutIntSecondinoutIntClosure: ((inout Int, inout Int) -> Void)?
             func swap(first: inout Int, second: inout Int) {
-                __spyableLedger?.record(self, "swapFirstinoutIntSecondinoutInt", "InoutParametersProtocolSpy.swap(first:second:)")
+                __spyableLedger?.record(self, "swapFirstinoutIntSecondinoutInt", "InoutParametersProtocolSpy.swap(first: inout Int, second: inout Int)")
                 __spyable_swapFirstinoutIntSecondinoutIntCallsCount += 1
                 __spyable_swapFirstinoutIntSecondinoutIntReceivedArguments = (first, second)
                 __spyable_swapFirstinoutIntSecondinoutIntReceivedInvocations.append((first, second))
@@ -4254,7 +4254,7 @@ final class UT_SpyableMacro: XCTestCase {
             }
             var swapFirstinoutStringSecondinoutStringClosure: ((inout String, inout String) -> Void)?
             func swap(first: inout String, second: inout String) {
-                __spyableLedger?.record(self, "swapFirstinoutStringSecondinoutString", "InoutParametersProtocolSpy.swap(first:second:)")
+                __spyableLedger?.record(self, "swapFirstinoutStringSecondinoutString", "InoutParametersProtocolSpy.swap(first: inout String, second: inout String)")
                 __spyable_swapFirstinoutStringSecondinoutStringCallsCount += 1
                 __spyable_swapFirstinoutStringSecondinoutStringReceivedArguments = (first, second)
                 __spyable_swapFirstinoutStringSecondinoutStringReceivedInvocations.append((first, second))
@@ -4409,7 +4409,7 @@ final class UT_SpyableMacro: XCTestCase {
             var configureSettingsinoutDictionaryStringAnyThrowableError: (any Error)?
             var configureSettingsinoutDictionaryStringAnyClosure: ((inout [String: Any]) async throws -> Void)?
             func configure(settings: inout [String: Any]) async throws {
-                __spyableLedger?.record(self, "configureSettingsinoutDictionaryStringAny", "InoutParametersProtocolSpy.configure(settings:)")
+                __spyableLedger?.record(self, "configureSettingsinoutDictionaryStringAny", "InoutParametersProtocolSpy.configure(settings: inout [String: Any])")
                 __spyable_configureSettingsinoutDictionaryStringAnyCallsCount += 1
                 __spyable_configureSettingsinoutDictionaryStringAnyReceivedSettings = (settings)
                 __spyable_configureSettingsinoutDictionaryStringAnyReceivedInvocations.append((settings))
@@ -4454,7 +4454,7 @@ final class UT_SpyableMacro: XCTestCase {
             var configureSettingsDictionaryStringAnyThrowableError: (any Error)?
             var configureSettingsDictionaryStringAnyClosure: (([String: Any]) async throws -> Void)?
             func configure(settings: [String: Any]) async throws {
-                __spyableLedger?.record(self, "configureSettingsDictionaryStringAny", "InoutParametersProtocolSpy.configure(settings:)")
+                __spyableLedger?.record(self, "configureSettingsDictionaryStringAny", "InoutParametersProtocolSpy.configure(settings: [String: Any])")
                 __spyable_configureSettingsDictionaryStringAnyCallsCount += 1
                 __spyable_configureSettingsDictionaryStringAnyReceivedSettings = (settings)
                 __spyable_configureSettingsDictionaryStringAnyReceivedInvocations.append((settings))

@@ -13,7 +13,8 @@ import SwiftSyntaxBuilder
 /// 1. Adds `private let __spyableLedger: SpyableLedger? = SpyableLedger.current`. The spy captures
 ///    the ledger once, at init, so calls made later from another thread or task still reach it.
 /// 2. Makes `__spyableLedger?.record(self, "<prefix>", "<Spy>.<method>(<labels>)")` the first
-///    statement of every command method. Methods returning a value get no ledger code at all.
+///    statement of every command method — `<label>: <Type>, …` for an overload, which shares its
+///    labels with another method. Methods returning a value get no ledger code at all.
 /// 3. Makes the getters of every command method's `CallsCount`, `Received…` and
 ///    `ReceivedInvocations` call `__spyableLedger?.markVerified(self, "<prefix>")` — `Called` reads
 ///    `CallsCount`, so it is covered too. On a plain spy, those stored properties are split into a
@@ -67,6 +68,7 @@ struct LedgerRewriter {
         let recordingFunction = recordingCommand(
           functionDeclaration,
           variablePrefix: polymorphismDetector.getVariablePrefix(for: functionDeclaration),
+          isPolymorphic: polymorphismDetector.isPolymorphic(functionDeclaration),
           spyName: classDeclaration.name.text
         )
         newMembers.append(MemberBlockItemSyntax(decl: DeclSyntax(recordingFunction)))
@@ -188,13 +190,17 @@ struct LedgerRewriter {
   private func recordingCommand(
     _ functionDeclaration: FunctionDeclSyntax,
     variablePrefix: String,
+    isPolymorphic: Bool,
     spyName: String
   ) -> FunctionDeclSyntax {
     guard var body = functionDeclaration.body else { return functionDeclaration }
 
-    let argumentLabels = functionDeclaration.signature.parameterClause.parameters
-      .map { $0.firstName.text + ":" }
-      .joined()
+    // An overload shares its labels with another method, so its description names the types too.
+    let parameters = functionDeclaration.signature.parameterClause.parameters
+    let argumentLabels =
+      isPolymorphic
+      ? parameters.map { "\($0.firstName.text): \($0.type.trimmed)" }.joined(separator: ", ")
+      : parameters.map { $0.firstName.text + ":" }.joined()
     let description = "\(spyName).\(functionDeclaration.name.text)(\(argumentLabels))"
     let record = CodeBlockItemSyntax(
       item: .expr(
