@@ -50,6 +50,7 @@ final class UT_SpyableMacro: XCTestCase {
 
         \(protocolDeclaration)
 
+        #if DEBUG
         public class ServiceProtocolSpy: ServiceProtocol, @unchecked Sendable {
             public init() {
             }
@@ -204,6 +205,7 @@ final class UT_SpyableMacro: XCTestCase {
                 useGenericsValues1Values2Values3Closure?(values1, values2, values3)
             }
         }
+        #endif
         """,
       macros: sut
     )
@@ -223,10 +225,12 @@ final class UT_SpyableMacro: XCTestCase {
 
         \(protocolDeclaration)
 
+        #if DEBUG
         class MyProtocolSpy: MyProtocol, @unchecked Sendable {
             init() {
             }
         }
+        #endif
         """,
       macros: sut
     )
@@ -244,10 +248,12 @@ final class UT_SpyableMacro: XCTestCase {
 
         \(protocolDeclaration)
 
+        #if DEBUG
         class MyProtocolSpy: MyProtocol, @unchecked Sendable {
             init() {
             }
         }
+        #endif
         """,
       macros: sut
     )
@@ -404,6 +410,7 @@ final class UT_SpyableMacro: XCTestCase {
 
           \(protocolDefinition)
 
+          #if DEBUG
           \(mapping.spyClassAccessLevel) class ServiceProtocolSpy: ServiceProtocol, @unchecked Sendable {
               \(mapping.spyClassAccessLevel) init() {
               }
@@ -425,6 +432,7 @@ final class UT_SpyableMacro: XCTestCase {
                   fetchUsernameContextCompletionClosure?(context, completion)
               }
           }
+          #endif
           """,
         macros: sut
       )
@@ -458,6 +466,7 @@ final class UT_SpyableMacro: XCTestCase {
 
           \(protocolDefinition)
 
+          #if DEBUG
           \(mapping.spyClassAccessLevel) class ServiceProtocolSpy: ServiceProtocol, @unchecked Sendable {
               \(mapping.spyClassAccessLevel) init() {
               }
@@ -479,6 +488,7 @@ final class UT_SpyableMacro: XCTestCase {
                   fetchUsernameContextCompletionClosure?(context, completion)
               }
           }
+          #endif
           """,
         macros: sut
       )
@@ -503,6 +513,7 @@ final class UT_SpyableMacro: XCTestCase {
 
         \(protocolDeclaration)
 
+        #if DEBUG
         fileprivate class ServiceProtocolSpy: ServiceProtocol, @unchecked Sendable {
             fileprivate init() {
             }
@@ -524,6 +535,7 @@ final class UT_SpyableMacro: XCTestCase {
                 fetchUsernameContextCompletionClosure?(context, completion)
             }
         }
+        #endif
         """,
       macros: sut
     )
@@ -1039,6 +1051,7 @@ final class UT_SpyableMacro: XCTestCase {
 
         \(protocolDeclaration)
 
+        #if DEBUG
         class OverloadedReturnTypesProtocolSpy: OverloadedReturnTypesProtocol, @unchecked Sendable {
             init() {
             }
@@ -1136,6 +1149,7 @@ final class UT_SpyableMacro: XCTestCase {
                 }
             }
         }
+        #endif
         """,
       macros: sut
     )
@@ -1163,6 +1177,7 @@ final class UT_SpyableMacro: XCTestCase {
 
         \(protocolDeclaration)
 
+        #if DEBUG
         class OverloadedParameterTypesProtocolSpy: OverloadedParameterTypesProtocol, @unchecked Sendable {
             init() {
             }
@@ -1283,6 +1298,7 @@ final class UT_SpyableMacro: XCTestCase {
                 }
             }
         }
+        #endif
         """,
       macros: sut
     )
@@ -1319,6 +1335,7 @@ final class UT_SpyableMacro: XCTestCase {
 
         \(protocolDeclaration)
 
+        #if DEBUG
         class ComplexTypesProtocolSpy: ComplexTypesProtocol, @unchecked Sendable {
             init() {
             }
@@ -1574,6 +1591,7 @@ final class UT_SpyableMacro: XCTestCase {
                 }
             }
         }
+        #endif
         """,
       macros: sut
     )
@@ -1598,6 +1616,7 @@ final class UT_SpyableMacro: XCTestCase {
 
         \(protocolDeclaration)
 
+        #if DEBUG
         class OptionalTypesProtocolSpy: OptionalTypesProtocol, @unchecked Sendable {
             init() {
             }
@@ -1674,6 +1693,7 @@ final class UT_SpyableMacro: XCTestCase {
                 }
             }
         }
+        #endif
         """,
       macros: sut
     )
@@ -1696,6 +1716,7 @@ final class UT_SpyableMacro: XCTestCase {
 
         \(protocolDeclaration)
 
+        #if DEBUG
         class GenericReturnTypesProtocolSpy: GenericReturnTypesProtocol, @unchecked Sendable {
             init() {
             }
@@ -1736,6 +1757,7 @@ final class UT_SpyableMacro: XCTestCase {
                 }
             }
         }
+        #endif
         """,
       macros: sut
     )
@@ -1767,6 +1789,7 @@ final class UT_SpyableMacro: XCTestCase {
 
         \(protocolDeclaration)
 
+        #if DEBUG
         class GenericConstraintsProtocolSpy: GenericConstraintsProtocol, @unchecked Sendable {
             init() {
             }
@@ -1949,6 +1972,7 @@ final class UT_SpyableMacro: XCTestCase {
                 }
             }
         }
+        #endif
         """,
       macros: sut
     )
@@ -1980,6 +2004,7 @@ final class UT_SpyableMacro: XCTestCase {
 
         \(protocolDeclaration)
 
+        #if DEBUG
         class ProtocolCompositionsProtocolSpy: ProtocolCompositionsProtocol, @unchecked Sendable {
             init() {
             }
@@ -2146,6 +2171,7 @@ final class UT_SpyableMacro: XCTestCase {
                 processItemanyCodableSendableHandleranyCodableSendableStringClosure?(item, handler)
             }
         }
+        #endif
         """,
       macros: sut
     )
@@ -2182,6 +2208,7 @@ final class UT_SpyableMacro: XCTestCase {
 
         \(protocolDeclaration)
 
+        #if DEBUG
         class AssociatedTypesProtocolSpy<Item, Container: Collection>: AssociatedTypesProtocol, @unchecked Sendable {
             init() {
             }
@@ -2401,6 +2428,7 @@ final class UT_SpyableMacro: XCTestCase {
                 }
             }
         }
+        #endif
         """,
       macros: sut
     )
@@ -2440,6 +2468,7 @@ final class UT_SpyableMacro: XCTestCase {
 
         \(protocolDeclaration)
 
+        #if DEBUG
         class FunctionAttributesProtocolSpy: FunctionAttributesProtocol, @unchecked Sendable {
             init() {
             }
@@ -2562,6 +2591,7 @@ final class UT_SpyableMacro: XCTestCase {
                 transformConverterSendableStringIntClosure?(converter)
             }
         }
+        #endif
         """,
       macros: sut
     )
@@ -2602,6 +2632,7 @@ final class UT_SpyableMacro: XCTestCase {
       expandedSource: """
         \(protocolDeclaration)
 
+        #if DEBUG
         class AsyncThrowingPolymorphismProtocolSpy: AsyncThrowingPolymorphismProtocol, @unchecked Sendable {
             init() {
             }
@@ -2887,6 +2918,7 @@ final class UT_SpyableMacro: XCTestCase {
                 }
             }
         }
+        #endif
         """,
       macros: sut
     )
@@ -2926,6 +2958,7 @@ final class UT_SpyableMacro: XCTestCase {
 
         \(protocolDeclaration)
 
+        #if DEBUG
         class InoutParametersProtocolSpy: InoutParametersProtocol, @unchecked Sendable {
             init() {
             }
@@ -3238,6 +3271,7 @@ final class UT_SpyableMacro: XCTestCase {
                 }
             }
         }
+        #endif
         """,
       macros: sut
     )
