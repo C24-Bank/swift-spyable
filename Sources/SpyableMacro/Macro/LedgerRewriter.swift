@@ -3,7 +3,9 @@ import SwiftSyntaxBuilder
 
 /// Rewrites an already-generated spy class so that, while a `SpyableLedger` is installed, every
 /// *command* call (a method returning `Void`) is recorded on it, and reading that method's recorded
-/// calls back marks them verified. With no ledger installed, the spy behaves exactly as before.
+/// calls back marks them verified. With no ledger installed, recording and verifying do nothing —
+/// but the split in step 3 applies regardless, so a spy subclass's observers on the split
+/// properties no longer fire on calls.
 ///
 /// Applied as the last post-processing pass: after `AccessLevelModifierRewriter`, which would
 /// otherwise overwrite the `private` modifiers added here, and after `ThreadSafetyRewriter`, whose

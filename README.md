@@ -201,17 +201,24 @@ While a `SpyableLedger` is installed, every spy created in that task reports eac
 
 ```swift
 let ledger = SpyableLedger()
-SpyableLedger.$current.withValue(ledger) {
-    let toaster = ToastingSpy()
-    ViewModel(toaster: toaster).save()
-    #expect(toaster.showToastCalled)   // verifies `showToast(_:)`
+defer {
+    for call in ledger.finish() {
+        Issue.record("Unverified call: \(call.description) × \(call.count)")
+    }
 }
-for call in ledger.finish() {
-    Issue.record("Unverified call: \(call.description) × \(call.count)")
+try SpyableLedger.$current.withValue(ledger) {
+    let toaster = ToastingSpy()
+    try ViewModel(toaster: toaster).save()
+    #expect(toaster.showToastCalled)   // verifies `showToast(_:)`
 }
 ```
 
-A spy captures the ledger when it is initialized, so calls made later from another thread still reach it. Methods returning a value are never recorded, and with no ledger installed spies behave as before.
+A spy captures the ledger when it is initialized, so calls made later from another thread still reach it. Methods returning a value are never recorded, and with no ledger installed recording and verifying do nothing. Keep in mind:
+
+- **Always call `finish()`**, also when the test throws (hence the `defer`). Until then the ledger keeps every recorded spy alive, and through it every argument the spy received.
+- **Only reads verify.** Resetting with a setter (`showToastCallsCount = 0`) does not; `showToastReceivedInvocations.removeAll()` does, because it reads the array before writing it back.
+- **Reads from inside the spy's own closure count.** A `showToastClosure` that reads `showToastCallsCount` verifies the call it handles.
+- **Subclass observers no longer fire on calls.** Whether or not a ledger is installed, a command's bookkeeping writes private backing fields, so a `didSet` a spy subclass adds to `showToastCallsCount` (or another tracked property) only sees writes made through the property.
 
 ## Installation
 

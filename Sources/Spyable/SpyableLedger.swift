@@ -7,22 +7,32 @@ import Foundation
 /// installed, each command call reports itself here, and reading that method's recorded calls on
 /// the spy (`Called`, `CallsCount`, `Received…`, `ReceivedInvocations`) marks them verified.
 /// Calls recorded after that read are unverified again. Methods returning a value are never
-/// recorded. With no ledger installed, spies behave exactly as they always have.
+/// recorded. With no ledger installed, recording and verifying do nothing.
 ///
 /// ### Usage:
 /// ```swift
 /// let ledger = SpyableLedger()
+/// defer {
+///     for call in ledger.finish() {
+///         // report `call.description` (e.g. "ToastingSpy.showToast(_:)") as unverified
+///     }
+/// }
 /// try await SpyableLedger.$current.withValue(ledger) {
 ///     try await body()
 /// }
-/// for call in ledger.finish() {
-///     // report `call.description` (e.g. "ToastingSpy.showToast(_:)") as unverified
-/// }
 /// ```
 ///
-/// The ledger keeps every spy it recorded a call for alive until `finish()`, so an
-/// `ObjectIdentifier` is never reused for a different spy mid-test. `finish()` releases them — call
-/// it once the test body is done, or the spies and the ledger keep each other alive.
+/// ### Notes:
+/// - The ledger keeps every spy it recorded a call for alive until `finish()` — and through it,
+///   every argument that spy received — so an `ObjectIdentifier` is never reused for a different
+///   spy mid-test. Always call `finish()`, also when the test throws (e.g. from a `defer`), or the
+///   spies and the ledger keep each other alive.
+/// - Only reads verify: `showToastCallsCount = 0` does not, while
+///   `showToastReceivedInvocations.removeAll()` does, because it reads the array first.
+/// - A read from inside the spy's own closure (`showToastClosure`) counts as verification too.
+/// - Whether or not a ledger is installed, a command's bookkeeping writes private backing fields,
+///   so a spy subclass's property observers (`didSet` on `showToastCallsCount`) no longer fire on
+///   calls.
 public final class SpyableLedger: @unchecked Sendable {
   /// The ledger spies created in the current task attach to, or `nil` when none is installed.
   @TaskLocal public static var current: SpyableLedger?
