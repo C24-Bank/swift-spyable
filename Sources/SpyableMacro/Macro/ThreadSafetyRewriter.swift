@@ -33,10 +33,10 @@ struct ThreadSafetyRewriter {
   private let returnValueFactory = ReturnValueFactory()
   private let closureFactory = ClosureFactory()
 
-  private let lockName = "__spyableLock"
+  static let lockName = "__spyableLock"
 
   private func backingName(for name: String) -> String {
-    "__spyable_" + name
+    StoredPropertySplit.backingName(for: name)
   }
 
   func rewrite(_ classDeclaration: ClassDeclSyntax) -> ClassDeclSyntax {
@@ -92,7 +92,7 @@ struct ThreadSafetyRewriter {
   private var lockDeclaration: VariableDeclSyntax {
     try! VariableDeclSyntax(
       """
-      private let \(raw: lockName) = NSLock()
+      private let \(raw: Self.lockName) = NSLock()
       """
     )
   }
@@ -106,58 +106,18 @@ struct ThreadSafetyRewriter {
   private func lockedDeclarations(
     for variableDeclaration: VariableDeclSyntax
   ) -> (name: String, type: String, backing: VariableDeclSyntax, accessor: VariableDeclSyntax)? {
-    guard variableDeclaration.bindings.count == 1,
-      let binding = variableDeclaration.bindings.first,
-      binding.accessorBlock == nil,
-      let identifierPattern = binding.pattern.as(IdentifierPatternSyntax.self)
-    else {
-      return nil
-    }
-
-    let name = identifierPattern.identifier.text
-    let backing_ = backingName(for: name)
-    // `CallsCount` is the one tracked property with no explicit type annotation — it relies on
-    // inference from its `= 0` initializer. Every other tracked property annotates its type.
-    let type = binding.typeAnnotation?.type.trimmed.description ?? "Int"
-    // The property may already have been rewritten to a specific access level (by
-    // AccessLevelModifierRewriter, which runs first) — that access level must survive onto the
-    // accessor we generate here, or every tracked property silently regresses to `internal`
-    // regardless of what the rest of the class is. The backing field is always `private`
-    // regardless: it's a new implementation detail, never meant to be exposed.
-    //
-    // Reduced to a plain string rather than interpolating the modifiers node directly: the node
-    // carries its own leading/trailing trivia from wherever it previously sat, which can make the
-    // rebuilt declaration fail to parse as a single VariableDeclSyntax.
-    let modifiersText =
-      variableDeclaration.modifiers.isEmpty
-      ? ""
-      : variableDeclaration.modifiers.map(\.name.text).joined(separator: " ") + " "
-
-    let backing: VariableDeclSyntax
-    if let initializer = binding.initializer {
-      backing = try! VariableDeclSyntax(
-        """
-        private var \(raw: backing_): \(raw: type) = \(initializer.value.trimmed)
-        """
-      )
-    } else {
-      backing = try! VariableDeclSyntax(
-        """
-        private var \(raw: backing_): \(raw: type)
-        """
-      )
-    }
+    guard let property = StoredPropertySplit(variableDeclaration) else { return nil }
 
     let accessor = try! VariableDeclSyntax(
       """
-      \(raw: modifiersText)var \(raw: name): \(raw: type) {
-          get { \(raw: lockName).lock(); defer { \(raw: lockName).unlock() }; return \(raw: backing_) }
-          set { \(raw: lockName).lock(); defer { \(raw: lockName).unlock() }; \(raw: backing_) = newValue }
+      \(raw: property.modifiersText)var \(raw: property.name): \(raw: property.type) {
+          get { \(raw: Self.lockName).lock(); defer { \(raw: Self.lockName).unlock() }; return \(raw: property.backingName) }
+          set { \(raw: Self.lockName).lock(); defer { \(raw: Self.lockName).unlock() }; \(raw: property.backingName) = newValue }
       }
       """
     )
 
-    return (name, type, backing, accessor)
+    return (property.name, property.type, property.backing, accessor)
   }
 
   // MARK: - Functions
@@ -231,12 +191,12 @@ struct ThreadSafetyRewriter {
 
     let newStatements: [CodeBlockItemSyntax] =
       [codeBlockItem(ExprSyntax("""
-        \(raw: lockName).lock()
+        \(raw: Self.lockName).lock()
         """))]
       + bookkeepingStatements
       + snapshotStatements
       + [codeBlockItem(ExprSyntax("""
-        \(raw: lockName).unlock()
+        \(raw: Self.lockName).unlock()
         """))]
       + remainingStatements
 
@@ -281,9 +241,70 @@ struct ThreadSafetyRewriter {
   }
 }
 
+/// A plain stored property with exactly one binding and no accessor block, taken apart so a
+/// post-pass can replace it with a `private` backing field plus a computed accessor of the
+/// property's own access level. Shared by `ThreadSafetyRewriter` and `LedgerRewriter`, so both name
+/// and declare the backing field identically.
+struct StoredPropertySplit {
+  let name: String
+  let type: String
+  /// The property's own modifiers followed by a space, or empty when it has none.
+  let modifiersText: String
+  let backingName: String
+  /// `private var __spyable_<name>: <type>`, keeping the property's initializer, if any.
+  let backing: VariableDeclSyntax
+
+  static func backingName(for name: String) -> String {
+    "__spyable_" + name
+  }
+
+  init?(_ variableDeclaration: VariableDeclSyntax) {
+    guard variableDeclaration.bindings.count == 1,
+      let binding = variableDeclaration.bindings.first,
+      binding.accessorBlock == nil,
+      let identifierPattern = binding.pattern.as(IdentifierPatternSyntax.self)
+    else {
+      return nil
+    }
+
+    name = identifierPattern.identifier.text
+    backingName = Self.backingName(for: name)
+    // `CallsCount` is the one tracked property with no explicit type annotation — it relies on
+    // inference from its `= 0` initializer. Every other tracked property annotates its type.
+    type = binding.typeAnnotation?.type.trimmed.description ?? "Int"
+    // The property may already have been rewritten to a specific access level (by
+    // AccessLevelModifierRewriter, which runs first) — that access level must survive onto the
+    // accessor generated in its place, or every tracked property silently regresses to `internal`
+    // regardless of what the rest of the class is. The backing field is always `private`
+    // regardless: it's a new implementation detail, never meant to be exposed.
+    //
+    // Reduced to a plain string rather than interpolating the modifiers node directly: the node
+    // carries its own leading/trailing trivia from wherever it previously sat, which can make the
+    // rebuilt declaration fail to parse as a single VariableDeclSyntax.
+    modifiersText =
+      variableDeclaration.modifiers.isEmpty
+      ? ""
+      : variableDeclaration.modifiers.map(\.name.text).joined(separator: " ") + " "
+
+    if let initializer = binding.initializer {
+      backing = try! VariableDeclSyntax(
+        """
+        private var \(raw: backingName): \(raw: type) = \(initializer.value.trimmed)
+        """
+      )
+    } else {
+      backing = try! VariableDeclSyntax(
+        """
+        private var \(raw: backingName): \(raw: type)
+        """
+      )
+    }
+  }
+}
+
 /// Renames exact-match identifier tokens — never a pattern or substring match, only a token whose
 /// full text equals one of the known, precomputed names being looked up.
-private final class RenameIdentifierRewriter: SyntaxRewriter {
+final class RenameIdentifierRewriter: SyntaxRewriter {
   private let renames: [String: TokenSyntax]
 
   init(renames: [String: TokenSyntax]) {
