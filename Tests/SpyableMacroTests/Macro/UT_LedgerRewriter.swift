@@ -637,6 +637,86 @@ final class UT_LedgerRewriter: XCTestCase {
     )
   }
 
+  /// Each command's bookkeeping renames only its own properties: `update`'s parameter keeps its
+  /// name although it equals `load`'s `CallsCount`.
+  func testParameterNamedLikeAnotherCommandsPropertyIsNotRenamed() {
+    assertLedgerExpansion(
+      of: """
+        protocol LikeGenerated {
+            func load()
+            func update(_ loadCallsCount: Int)
+        }
+        """,
+      generates: """
+        class LikeGeneratedSpy: LikeGenerated, @unchecked Sendable {
+            init() {
+            }
+            private let __spyableLedger: SpyableLedger? = SpyableLedger.current
+            private var __spyable_loadCallsCount: Int = 0
+            var loadCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "load")
+                    return __spyable_loadCallsCount
+                }
+                set {
+                    __spyable_loadCallsCount = newValue
+                }
+            }
+            var loadCalled: Bool {
+                return loadCallsCount > 0
+            }
+            var loadClosure: (() -> Void)?
+            func load() {
+                __spyableLedger?.record(self, "load", "LikeGeneratedSpy.load()")
+                __spyable_loadCallsCount += 1
+                loadClosure?()
+            }
+            private var __spyable_updateCallsCount: Int = 0
+            var updateCallsCount: Int {
+                get {
+                    __spyableLedger?.markVerified(self, "update")
+                    return __spyable_updateCallsCount
+                }
+                set {
+                    __spyable_updateCallsCount = newValue
+                }
+            }
+            var updateCalled: Bool {
+                return updateCallsCount > 0
+            }
+            private var __spyable_updateReceivedLoadCallsCount: Int?
+            var updateReceivedLoadCallsCount: Int? {
+                get {
+                    __spyableLedger?.markVerified(self, "update")
+                    return __spyable_updateReceivedLoadCallsCount
+                }
+                set {
+                    __spyable_updateReceivedLoadCallsCount = newValue
+                }
+            }
+            private var __spyable_updateReceivedInvocations: [Int] = []
+            var updateReceivedInvocations: [Int] {
+                get {
+                    __spyableLedger?.markVerified(self, "update")
+                    return __spyable_updateReceivedInvocations
+                }
+                set {
+                    __spyable_updateReceivedInvocations = newValue
+                }
+            }
+            var updateClosure: ((Int) -> Void)?
+            func update(_ loadCallsCount: Int) {
+                __spyableLedger?.record(self, "update", "LikeGeneratedSpy.update(_:)")
+                __spyable_updateCallsCount += 1
+                __spyable_updateReceivedLoadCallsCount = (loadCallsCount)
+                __spyable_updateReceivedInvocations.append((loadCallsCount))
+                updateClosure?(loadCallsCount)
+            }
+        }
+        """
+    )
+  }
+
   func testExplicitVoidAndEmptyTupleReturnTypesAreCommands() {
     assertLedgerExpansion(
       of: """

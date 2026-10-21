@@ -51,11 +51,6 @@ struct LedgerRewriter {
         verifyingPrefixes[name] = variablePrefix
       }
     }
-    let backingRenamer = RenameIdentifierRewriter(
-      renames: verifyingPrefixes.keys.reduce(into: [:]) {
-        $0[$1] = .identifier(StoredPropertySplit.backingName(for: $1))
-      }
-    )
 
     var newMembers: [MemberBlockItemSyntax] = []
     for member in classDeclaration.memberBlock.members {
@@ -72,8 +67,7 @@ struct LedgerRewriter {
         let recordingFunction = recordingCommand(
           functionDeclaration,
           variablePrefix: polymorphismDetector.getVariablePrefix(for: functionDeclaration),
-          spyName: classDeclaration.name.text,
-          backingRenamer: backingRenamer
+          spyName: classDeclaration.name.text
         )
         newMembers.append(MemberBlockItemSyntax(decl: DeclSyntax(recordingFunction)))
       } else {
@@ -194,8 +188,7 @@ struct LedgerRewriter {
   private func recordingCommand(
     _ functionDeclaration: FunctionDeclSyntax,
     variablePrefix: String,
-    spyName: String,
-    backingRenamer: RenameIdentifierRewriter
+    spyName: String
   ) -> FunctionDeclSyntax {
     guard var body = functionDeclaration.body else { return functionDeclaration }
 
@@ -213,10 +206,23 @@ struct LedgerRewriter {
       )
     )
 
-    // The spy's own bookkeeping writes the backing fields, so it never counts as a read. On a
-    // thread-safe spy it already does, and this finds nothing left to rename.
-    let bookkeeping = backingRenamer.rewrite(body.statements).cast(CodeBlockItemListSyntax.self)
-    body.statements = CodeBlockItemListSyntax([record] + Array(bookkeeping))
+    // The method's own bookkeeping — its first statement per verifying property — writes the
+    // backing fields, so it never counts as a read. Only those statements and only this method's
+    // names: a parameter may be named like another command's property. On a thread-safe spy the
+    // bookkeeping already writes the backing fields, and this finds nothing left to rename.
+    let names = verifyingPropertyNames(of: functionDeclaration, variablePrefix: variablePrefix)
+    let renamer = RenameIdentifierRewriter(
+      renames: names.reduce(into: [:]) {
+        $0[$1] = .identifier(StoredPropertySplit.backingName(for: $1))
+      }
+    )
+    let statements = Array(body.statements)
+    let bookkeeping = statements.prefix(names.count).map {
+      renamer.rewrite($0).cast(CodeBlockItemSyntax.self)
+    }
+    body.statements = CodeBlockItemListSyntax(
+      [record] + bookkeeping + statements.dropFirst(names.count)
+    )
 
     var newFunction = functionDeclaration
     newFunction.body = body
