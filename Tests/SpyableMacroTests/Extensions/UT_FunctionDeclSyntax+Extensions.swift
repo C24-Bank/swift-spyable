@@ -51,4 +51,26 @@ final class UT_FunctionDeclSyntaxExtensions: XCTestCase {
 
     XCTAssertNil(protocolFunctionDeclaration.forceCastType)
   }
+
+  // MARK: - isCommand
+
+  func testIsCommand_VoidSpellings() throws {
+    for returnClause in [
+      "", "-> Void", "-> ()", "-> Swift.Void", "-> (Void)", "-> (())", "-> (Swift.Void)",
+      "-> ((Void))",
+    ] {
+      let functionDeclaration = try FunctionDeclSyntax("func foo() \(raw: returnClause)") {}
+      XCTAssertTrue(functionDeclaration.isCommand, returnClause)
+    }
+  }
+
+  func testIsCommand_ValueReturningSpellings() throws {
+    for returnClause in [
+      "-> Int", "-> (Int)", "-> (Void, Void)", "-> Void?", "-> Swift.Int", "-> Foo.Void",
+      "-> (Int) -> Void",
+    ] {
+      let functionDeclaration = try FunctionDeclSyntax("func foo() \(raw: returnClause)") {}
+      XCTAssertFalse(functionDeclaration.isCommand, returnClause)
+    }
+  }
 }

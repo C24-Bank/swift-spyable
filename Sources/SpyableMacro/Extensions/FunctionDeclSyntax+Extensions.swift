@@ -20,13 +20,23 @@ extension FunctionDeclSyntax {
     return returnType.trimmed
   }
 
-  /// Whether the function is a *command*: it returns nothing — no return clause, `-> Void` or
-  /// `-> ()` — as opposed to a query that returns a value.
+  /// Whether the function is a *command*: it returns nothing — no return clause, `-> Void`,
+  /// `-> Swift.Void`, `-> ()`, or any of those in parentheses — as opposed to a query that returns
+  /// a value.
   var isCommand: Bool {
-    guard let returnType = signature.returnClause?.type else { return true }
-    if let tupleType = returnType.as(TupleTypeSyntax.self) {
-      return tupleType.elements.isEmpty
+    signature.returnClause?.type.isVoid ?? true
+  }
+}
+
+extension TypeSyntax {
+  fileprivate var isVoid: Bool {
+    if let tupleType = self.as(TupleTypeSyntax.self) {
+      return tupleType.elements.count <= 1 && tupleType.elements.allSatisfy(\.type.isVoid)
     }
-    return returnType.as(IdentifierTypeSyntax.self)?.name.text == "Void"
+    if let memberType = self.as(MemberTypeSyntax.self) {
+      return memberType.name.text == "Void"
+        && memberType.baseType.as(IdentifierTypeSyntax.self)?.name.text == "Swift"
+    }
+    return self.as(IdentifierTypeSyntax.self)?.name.text == "Void"
   }
 }
