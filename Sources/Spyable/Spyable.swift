@@ -146,6 +146,12 @@
 ///   }
 ///   ```
 ///
+/// ### Unverified calls:
+/// While a `SpyableLedger` is installed (`SpyableLedger.$current.withValue(_:operation:)`), every
+/// command call (a method returning `Void`) is reported to it, and reading that method's `Called`,
+/// `CallsCount`, `Received…` or `ReceivedInvocations` marks its calls verified. See
+/// `SpyableLedger`.
+///
 /// ### Notes:
 /// - The `@Spyable` macro should only be applied to protocols. Applying it to other declarations will result in an error.
 /// - The generated spy class name is suffixed with `Spy` (e.g., `ServiceProtocolSpy`).

@@ -195,6 +195,24 @@ The naming algorithm follows these rules:
 5. **Special Keywords**: Includes `async`, `throws`, `escaping`, `Sendable`, etc.
 6. **Type Sanitization**: Converts `[Type]` to `ArrayType`, `[Key: Value]` to `DictionaryKeyValue`, removes forbidden characters `:<>[](), -&` and converts `?` to `Optional`
 
+### Failing on Unverified Commands (`SpyableLedger`)
+
+While a `SpyableLedger` is installed, every spy created in that task reports each call of a *command* (a method returning `Void`) to it. Reading the method's `Called`, `CallsCount`, `Received…` or `ReceivedInvocations` marks its calls so far as verified. `finish()` returns the calls nobody read back, so a test helper or trait can fail on them:
+
+```swift
+let ledger = SpyableLedger()
+SpyableLedger.$current.withValue(ledger) {
+    let toaster = ToastingSpy()
+    ViewModel(toaster: toaster).save()
+    #expect(toaster.showToastCalled)   // verifies `showToast(_:)`
+}
+for call in ledger.finish() {
+    Issue.record("Unverified call: \(call.description) × \(call.count)")
+}
+```
+
+A spy captures the ledger when it is initialized, so calls made later from another thread still reach it. Methods returning a value are never recorded, and with no ledger installed spies behave as before.
+
 ## Installation
 
 ### Xcode Projects
